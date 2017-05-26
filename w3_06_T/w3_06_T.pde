@@ -24,6 +24,12 @@
  *
  * This sketch is the finished version from the exercise
  */
+int width1=300; // that be the width of your brush
+  //
+  float radx;   // Radius
+  float rady;
+  float angle1; // angle 
+ 
 
 float[] x;      // position
 float[] y;
@@ -33,10 +39,14 @@ int numElements;   // number of elements
 
 float proximity;  // if distance between elements < proximity then draw a line between them
 
+int sizze=400;
+int colorH = 25;
 void setup() {
-  size(500, 500);
- background(0);
-  numElements = 20;
+  size(720, 720);
+
+  numElements = 500;
+   background(0);
+   colorMode(HSB);
 
   // allocate arrays
   x= new float[numElements];
@@ -44,14 +54,21 @@ void setup() {
   xInc= new float[numElements];
   yInc= new float[numElements];
 
-  proximity = 500;   // influence distance
+  proximity = 100;   // influence distance
 
   // random starting position and direction
   for (int i=0; i<numElements; i++) {
-    x[i] = random(width);
-    y[i] = random(height);
-    xInc[i] = random(-1, 1);
-    yInc[i] = random(-1, 1);
+   // x[i] = random(width/2-sizze,width/2+sizze);
+   // y[i] = random(height/2-sizze,height/2+sizze);
+    
+      radx=random(width1);
+    rady=random(width1);
+    angle1= random(359);
+    //
+    x[i]=(radx*cos(radians(angle1)))+width/2;
+    y[i]=(radx*sin(radians(angle1)))+height/2;
+    xInc[i] = random(-5, 5);
+    yInc[i] = random(-5, 5);
   }
 
   strokeWeight(2);
@@ -59,7 +76,7 @@ void setup() {
 
 void draw() {
 
-  // background(255);
+  // background(200,10);
 
   // iterate over each point
   for (int i=0; i<numElements; i++) {
@@ -68,64 +85,36 @@ void draw() {
     y[i] += yInc[i];
 
     // bounce off the sides of the window
-    if (x[i] > width || x[i] < 0) {
-      xInc[i] = xInc[i] > 0 ? -random(1) : random(1);
+    if (x[i] > width/2+100 || x[i] <width/2-100) {
+      xInc[i] = xInc[i] > 0 ? -random(5) : random(5);
     }
 
-    if (y[i] > height || y[i] < 0 ) {
-      yInc[i] = yInc[i] > 0 ? -random(1) : random(1);
+    if (y[i] > height/2+100|| y[i] <height/2-100 ) {
+      yInc[i] = yInc[i] > 0 ? -random(5) : random(5);
     }
-
-    // drawElement(x[i], y[i], xInc[i], yInc[i]);
   }
 
   for (int i=0; i<numElements; i++) {
     for (int j=0; j<i; j++) {
       float distance = dist(x[i], y[i], x[j], y[j]  );
-      if (distance > proximity) {
-        if (i%2 == 0 || j%5==0) {
-          stroke(0,0,255, 10);
+      if (distance < proximity) {
+        if (i%2 == 0 || j%2==0) {
+          stroke(colorH, 255,255, 5);
         } 
         else {
-          stroke(255, 10);
+          stroke(0, 10);
         }
-        line(x[i], y[i], x[j], y[j]  );
-      }
-            if (distance -100< proximity) {
-        if (i%2 == 0 || j%5==0) {
-          stroke(0,255,0, 1);
-        } 
         line(x[i], y[i], x[j], y[j]  );
       }
     }
   }
 }
 
-void drawElement(float x, float y, float dx, float dy ) {
-
-  // draw the point in red
-  noFill();
-  stroke(255, 0, 0);
-  point(x, y);
-
-  // draw an arrow in the current direction of travel
-  stroke(0, 100);
-  float endX = x + (dx*20);
-  float endY = y + (dy*20);
-  float arX = x + (dx*15);
-  float arY = y + (dy*15);
-  line(x, y, endX, endY);
-  line(endX, endY, arX + (dy * 5), arY - (dx * 5));
-  line(endX, endY, arX - (dy * 5), arY + (dx * 5));
-
-
-  // draw the boundary of proximity
-  stroke(0, 10);
-  ellipse(x, y, proximity, proximity);
-}
-
-  void keyPressed() {
-  if (key == ' ') {
+void keyPressed() {
+  if (key == 'c') {
+  sizze-=100;
+  }
+  if (keyCode == 32) {
   saveFrame("w3_06-######.png");
   }
 }
