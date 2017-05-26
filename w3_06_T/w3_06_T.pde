@@ -43,8 +43,8 @@ int sizze=400;
 int colorH = 25;
 void setup() {
   size(720, 720);
-
-  numElements = 500;
+frameRate(300);
+  numElements = 200;
    background(0);
    colorMode(HSB);
 
@@ -54,7 +54,7 @@ void setup() {
   xInc= new float[numElements];
   yInc= new float[numElements];
 
-  proximity = 100;   // influence distance
+  proximity = 70;   // influence distance
 
   // random starting position and direction
   for (int i=0; i<numElements; i++) {
@@ -65,13 +65,13 @@ void setup() {
     rady=random(width1);
     angle1= random(359);
     //
-    x[i]=(radx*cos(radians(angle1)))+width/2;
-    y[i]=(radx*sin(radians(angle1)))+height/2;
+    x[i]=(random(width1)*cos(radians(angle1)))+width/2;
+    y[i]=(random(width1)*sin(radians(angle1)))+height/2;
     xInc[i] = random(-5, 5);
     yInc[i] = random(-5, 5);
   }
 
-  strokeWeight(2);
+  strokeWeight(1);
 }
 
 void draw() {
@@ -85,12 +85,12 @@ void draw() {
     y[i] += yInc[i];
 
     // bounce off the sides of the window
-    if (x[i] > width/2+100 || x[i] <width/2-100) {
-      xInc[i] = xInc[i] > 0 ? -random(5) : random(5);
+    if (x[i] > (width1)*cos(radians(angle1))+width/2 || x[i] <(width1)*cos(radians(angle1))+width/2) {
+      xInc[i] = xInc[i] > 0 ? -random(1) : random(1);
     }
 
-    if (y[i] > height/2+100|| y[i] <height/2-100 ) {
-      yInc[i] = yInc[i] > 0 ? -random(5) : random(5);
+    if (y[i] > (width1)*cos(radians(angle1))+height/2|| y[i] < (width1)*cos(radians(angle1))+height/2 ) {
+      yInc[i] = yInc[i] > 0 ? -random(1) : random(1);
     }
   }
 
@@ -99,10 +99,10 @@ void draw() {
       float distance = dist(x[i], y[i], x[j], y[j]  );
       if (distance < proximity) {
         if (i%2 == 0 || j%2==0) {
-          stroke(colorH, 255,255, 5);
+          stroke(colorH, 255,255, 1);
         } 
         else {
-          stroke(0, 10);
+          stroke(0, 25);
         }
         line(x[i], y[i], x[j], y[j]  );
       }
@@ -112,7 +112,28 @@ void draw() {
 
 void keyPressed() {
   if (key == 'c') {
-  sizze-=100;
+    if (colorH<300)
+    {
+        colorH += 125;
+    }
+    
+  width1-=50;
+if (width1<250 && width1>-300)
+ width1= -400;
+  println("width1 " +width1);
+  for (int i=0; i<numElements; i++) {
+   // x[i] = random(width/2-sizze,width/2+sizze);
+   // y[i] = random(height/2-sizze,height/2+sizze);
+    
+      radx=random(width1);
+    rady=random(width1);
+    angle1= random(359);
+    //
+    x[i]=(random(width1)*cos(radians(angle1)))+width/2;
+    y[i]=(random(width1)*sin(radians(angle1)))+height/2;
+    xInc[i] = random(-1, 1);
+    yInc[i] = random(-1, 1);
+  }
   }
   if (keyCode == 32) {
   saveFrame("w3_06-######.png");
