@@ -24,6 +24,7 @@ background(0);
 }
 
 void draw(){
+  background(0);
   float dt = 0.01;
   float dx  = (a * (y - x))*dt;
   float dy  = (x * (b - z)-y)*dt;
