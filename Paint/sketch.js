@@ -63,17 +63,17 @@ function mouseClicked(){
 }
 
 function mouseDragged() {
-
+200,hi,800,610
          strokeWeight(Slider.value());
         stroke(H,S,B);
         smooth();
-         if ((mouseX>250)&&(mouseX<1020)&&(mouseY>hi-20)&&(mouseY<600+hi-20)){
+         if ((mouseX>200)&&(mouseX<1000)&&(mouseY>hi)&&(mouseY<600+hi)){
                    line(mouseX, mouseY, pmouseX, pmouseY);
            noFill();
             
         strokeWeight(40);
         stroke(0,0,20);
-       rect(180,hi-20,890,660);
+      // rect(180,hi-20,890,660);
         stroke(H,S,B);
             strokeWeight(Slider.value());
            
