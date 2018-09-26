@@ -27,7 +27,7 @@ void setup() {
   frameRate(5);
   size(905, 1280);
   strokeWeight(1);
-  file = "zapytaj.txt";
+  file = "77.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
   sad.setAll();
@@ -48,7 +48,7 @@ void draw() {
   drawVerses();
   //countTotalPointsForLetters();
   //if (a%2==0)
- noLoop();
+ //noLoop();
  // else
  // loop();
 }
@@ -100,7 +100,7 @@ println("tL" + tL);
     println();
       prevX = x;//+a;
       prevY = y+wLen;
-    x= int(random(wLen));
+    x= int(random(wLen/3));
     y+= maxA; //int(random(score/20))+
          // stroke(2);
       //stroke(a*3);
@@ -130,7 +130,7 @@ void drawWords() {
     println("litery" +wLen/5);
     x= int(random(wLen*4));
 
-    rect(x, y, a, wLen);
+    rect(x, y, wLen, a);
    // println("x "+ x);
     y+=i*int(random(wLen));// + wLen;
   }
@@ -164,10 +164,34 @@ void keyPressed() {
 float countWLc(int wl) {
   float calc = 0;
   if (wl<10) {
-     calc =4*( 10 - wl);
+     calc =6*( 10 - wl);
   }
-     if (wl>=10){
-       calc = (wl-2) *0.042;
+     if ((wl>=10)&&(wl<20)){
+       calc = (20 - wl) *1.2;
+      // calc = 50*(1/(wl - 8));
+  }
+   if ((wl>=20)&&(wl<30)){
+       calc = (30 - wl) *0.85;
+      // calc = 50*(1/(wl - 8));
+  }
+   if ((wl>=30)&&(wl<40)){
+       calc = (40 - wl) *0.5;
+      // calc = 50*(1/(wl - 8));
+  }
+  if ((wl>=40)&&(wl<50)){
+       calc = (50 - wl) *0.35;
+      // calc = 50*(1/(wl - 8));
+  }
+    if ((wl>=50)&&(wl<60)){
+       calc = (60 - wl) *0.3;
+      // calc = 50*(1/(wl - 8));
+  }
+      if ((wl>=60)&&(wl<70)){
+       calc = (70 - wl) *0.65;
+      // calc = 50*(1/(wl - 8));
+  }
+  if ((wl>=70)&&(wl<80)){
+       calc = (80 - wl) *0.45;
       // calc = 50*(1/(wl - 8));
   }
   return calc;
