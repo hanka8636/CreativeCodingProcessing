@@ -22,12 +22,13 @@ String file;
 int score;
 IntDict totalPointsForLetter;
 color col =0;
+Grid grid;
 
 void setup() {
   frameRate(5);
   size(905, 1280);
   strokeWeight(1);
-  file = "77.txt";
+  file = "pawlikowska.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
   sad.setAll();
@@ -37,7 +38,7 @@ void setup() {
   col = color(0,score*0.5,score*0.8);
   stroke(col);
   background(0,0,col);
-
+  grid = new Grid("Ach, to nie było warte...", "Maria Pawlikowska-Jasnorzewska");
   println(score);
 }
  //<>//
@@ -191,8 +192,15 @@ float countWLc(int wl) {
       // calc = 50*(1/(wl - 8));
   }
   if ((wl>=70)&&(wl<80)){
-       calc = (80 - wl) *0.45;
+       calc = (80 - wl) *0.4;
       // calc = 50*(1/(wl - 8));
   }
   return calc;
+}
+
+void mousePressed(){
+  if (mouseButton == LEFT)
+grid.drawTitleM();
+ if (mouseButton == RIGHT)
+grid.drawAuthorM();
 }
