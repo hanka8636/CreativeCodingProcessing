@@ -34,7 +34,7 @@ class SplitAndDict {
   }
   
     String[] getWordsFromTable(String table) {
-     String[] words = splitTokens(table, " ,.!:-?");
+     String[] words = splitTokens(table, " ,.!:-?x");
     return words;
   }
 
@@ -44,7 +44,7 @@ class SplitAndDict {
   }
   
   String[] getVerses(){
-     String[] verses =  textOneLine.split("(?m)^\\s*$");
+     String[] verses =  textOneLine.split("x");
   return verses;
   }
 
