@@ -25,10 +25,11 @@ color col =0;
 Grid grid;
 
 void setup() {
-  frameRate(5);
+   textSize(32);
+  frameRate(2);
   size(905, 1280);
   //strokeWeight(1);
-
+ fill(255, 255, 255,20);
   file = "arktyka.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
@@ -45,13 +46,13 @@ void setup() {
 }
 
 void draw() {
- // background(0);
+  background(0);
 
   //drawWords();
   drawVerses();
   //countTotalPointsForLetters();
   //if (a%2==0)
-  //noLoop();
+  noLoop();
   // else
   // loop();
 }
@@ -65,32 +66,50 @@ void drawVerses() {
   println("tL" + tL);
   int x = 20;
   int y = 20;
-  int prevX = x;
+  int prevX = 200;
   int prevY = y; 
   int wLen = 0;
   int a = 0;
   //int prevI = 0;
   int maxA = 0;
-
+int minY = 0, minX =  0;
+int maxY = 0, maxX = 0;
   String[] vers = sad.getVerses();
   String[] lines = sad.getLines();
-  int h = lines.length;
+int y1 = int(random(height/2-50, height/2+50));
   for (int j =0; j<vers.length; j++) {
-    println(vers.length);
+
     String[] words = sad.getWordsFromTable(vers[j]);
+      int h = vers[j].length();
+    println(h);
+    
     int len = vers.length;
-    int low = j*(width/vers.length);
-    int max = low + width/vers.length;
-    int x1 = int(random(low+50, max/2+50));
-    int y1 = int(random((len*10 + 400), (len*10 + 600)));
+    int low = j*(width/len);
+    int max = low + width/len;
+    int x1 = int(random(low+50, max/2-100));
+    if(x1>prevX) x1=prevX - int(random(50));
+    if ( j==0){
+     minX = x1;
+     minY = y1;}
+    
+    //int y1 = int(random((len*10 + 400), (len*10 + 600)));
+    text("1", x1, y1);
 
-    int x2 =  int(random(h*10 - 20, h*10 + 20));
+    int x2 =  int(random(2*prevX/3-50, 2*prevX/3+50)*1.8);
+    if(x2<x1) x2+=100;
     int y2 = int(random((len*10 + 400), (len*10 + 600)));
-
+    text("2", x2, y2);
+   if (j==vers.length-1)
+     {
+     maxX = x2;
+     maxY = y1;  
+ }
+    
     int x3 = int(random(x1, x2));
     int y3 = int(random((h+10), (h-35)));
-
-    triangle(x1, y1, x2, y2, x3, y3);
+    text("3", x3, y3);
+    
+    triangle(x1, y1, x2, y1, x3, y3);
     // String s = words[j];
     // print("wers " + i + " " + s + " ");
 
@@ -102,7 +121,7 @@ void drawVerses() {
     //println("litery" +wLen/5);
     // textSize(a/(2.5*tL));
     //text(words[j], x+30, y);
-    fill(255, 30);
+   
     //  rect(x, y, wLen, a);
     //if ((prevI != i)&&(j==0))
     // strokeWeight(2);
@@ -110,12 +129,15 @@ void drawVerses() {
     //       strokeWeight(wLen/2);
 
 
-    //prevX = x;
-    //prevY = y;
-    x+= wLen; //int(random(wLen*4));
+    prevX = x2;
+    prevY = y1;
+   // prevX= wLen; //int(random(wLen*4));
 
     //println("x "+ x);
   }
+  int dX = width-300;
+  int dY = height-300;
+  triangle(minX, minY, maxX, maxY, dX, dY);
   println();
   prevX = x;//+a;
   prevY = y+wLen;
