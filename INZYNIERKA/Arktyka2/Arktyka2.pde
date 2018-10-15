@@ -52,7 +52,7 @@ void draw() {
   drawVerses();
   //countTotalPointsForLetters();
   //if (a%2==0)
-  noLoop();
+  //noLoop();
   // else
   // loop();
 }
@@ -76,7 +76,7 @@ void drawVerses() {
   int maxY = 0, maxX = 0;
   String[] vers = sad.getVerses();
   String[] lines = sad.getLines();
-    int prevX = 75;
+    int prevX = 150;
    int y3 = int(random(300+width/3,400+width/3));
   for (int j =0; j<vers.length; j++) {
 
@@ -85,7 +85,7 @@ void drawVerses() {
     println(h);
 
     int len = vers.length;
-    int low = j*(width/len);
+    int low = prevX;//(width/len);
     int max = low + width/len;
     int x1 =  int(random(prevX-25,low));
     println(j+" x1 " + x1);
@@ -99,16 +99,18 @@ void drawVerses() {
 int x2 =  x1+int(random(h/8,h/8+50));
 println("x2 " + x2);
     //int y1 = int(random((len*10 + 400), (len*10 + 600)));
-    text("1", x1, y1);
-int x4 =  int(random(prevX, max/2));
-if (x4>x1) x4=x1-20;
+   
+int x4 =  int(random(prevX, max));
+if (x4>x1) x4=x1-10;
 println("x4 " + x4);
-    int x3 =  x4+int(random(h/4+25,h/4+50));;
+    int x3 =  x4+int(random(h/2+25,h/2+50));
+    if (x3 < x2)
+    x3+=20;
     println("x3 " + x3);
    // if (x2<x1) x2+=100;
     int y2 = int(random((y1 - 50), (y1 + 50)));
     println("y2 " + y2);
-    text("2", x2, y2);
+   // text("2", x2, y2);
   /*  if (j==vers.length-1)
     {
       maxX = x2;
@@ -116,10 +118,10 @@ println("x4 " + x4);
     }
 */
    
-    text("3", x3, y3);
+ //   text("3", x3, y3);
 println("y3 " + y3);
     //triangle(x1, y1, x2, y1, x3, y3);
-
+fill(255, 255, 255, 80);
     beginShape();
     vertex(x1, y1);
     vertex(x2, y2);
@@ -127,7 +129,16 @@ println("y3 " + y3);
     vertex(x4, y3);
     // etc;
     endShape();
-
+    fill(255,20);
+     beginShape();
+    
+    vertex(x3, y3);
+    vertex(x4, y3);
+    vertex(x1, y1+y3-100);
+    vertex(x2, y2+y3-100);
+    // etc;
+    endShape();
+ text(h, x2, y1-25);
     // String s = words[j];
     // print("wers " + i + " " + s + " ");
 
