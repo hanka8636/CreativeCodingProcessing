@@ -26,17 +26,17 @@ Grid grid;
 
 void setup() {
   frameRate(5);
-  size(905, 1280);
+  size(707, 1000);
   strokeWeight(1);
-  file = "pawlikowska.txt";
+  file = "test.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
   sad.setAll();
   textLine = sad.getOneLiner();
   sad.createLettersDict();
   score = sp.countPoints(textLine);
-  col = color(0,score*0.5,score*0.8);
-  stroke(col);
+  //col = color(0,score*0.5,score*0.8);
+  stroke(0);
   background(0,0,col);
   grid = new Grid("Ach, to nie było warte...", "Maria Pawlikowska-Jasnorzewska");
   println(score);
@@ -46,13 +46,46 @@ void draw() {
   background(0,score*0.5,score*0.8);
 
   //drawWords(); //<>//
-  drawVerses();
+ // drawVerses();
+ text =sad.getText();
+ drawPas(text);
   //countTotalPointsForLetters();
   //if (a%2==0)
- //noLoop();
+// noLoop();
  // else
  // loop();
 }
+
+void drawPas(String[] s){
+    int tL = sad.text.length;
+    float wLc = countWLc(tL);
+    float unit =random(3*wLc, 4*wLc);
+    println("Unit:"+unit);
+    stroke(255);
+    strokeCap(PROJECT);
+strokeWeight(random(25,75));
+    float pH = s[0].length()+unit;
+   line(0,10*s[0].length()+unit,10*s[0].length(),unit); 
+for (int i=1; i<tL; i++){
+int pL=s[i].length();
+//strokeWeight(3);
+line(0,10*pH+unit,10*pL,10*(pH-pL)+unit);
+println(10*pH+unit);
+text(s[i],0,10*pH+unit,10*pL,10*(pH-pL)+unit);
+pH+=unit;
+println("pH:" + pH);
+/*
+beginShape();
+vertex (0,10*pL+(unit*2)+(unit*(i+1)));
+vertex (0,10*pL+((i+1)*unit)+unit);
+vertex (10*pL+(unit)+(unit*(i+1)),(unit*(i+1))-unit);
+vertex (10*pL+(unit)+(unit*(i+1)),unit*(i+1));
+endShape();
+*/
+}
+
+}
+
 
 //Metoda rysuje Wizualizację słów w wersach
 void drawVerses() {
@@ -168,7 +201,7 @@ void keyPressed() {
 float countWLc(int wl) {
   float calc = 0;
   if (wl<10) {
-     calc =6*( 10 - wl);
+     calc =( 10 - wl);
   }
      if ((wl>=10)&&(wl<20)){
        calc = (20 - wl) *1.2;
@@ -179,7 +212,7 @@ float countWLc(int wl) {
       // calc = 50*(1/(wl - 8));
   }
    if ((wl>=30)&&(wl<40)){
-       calc = (40 - wl) *0.5;
+       calc = (40 - wl) *1.5;
       // calc = 50*(1/(wl - 8));
   }
   if ((wl>=40)&&(wl<50)){
