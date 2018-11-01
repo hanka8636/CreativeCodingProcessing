@@ -25,10 +25,10 @@ color col =0;
 Grid grid;
 
 void setup() {
-  frameRate(5);
+  frameRate(3);
   size(707, 1000);
   strokeWeight(1);
-  file = "test.txt";
+  file = "26.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
   sad.setAll();
@@ -43,35 +43,41 @@ void setup() {
 }
  //<>//
 void draw() {
-  background(0,score*0.5,score*0.8);
-
+     color wh =color(0,0,0,60);
+  background(wh);
+  //rect(width,height,width,height);
+  
   //drawWords(); //<>//
  // drawVerses();
  text =sad.getText();
  drawPas(text);
   //countTotalPointsForLetters();
   //if (a%2==0)
-// noLoop();
+ //noLoop();
  // else
  // loop();
+
 }
 
 void drawPas(String[] s){
+
+
     int tL = sad.text.length;
     float wLc = countWLc(tL);
-    float unit =random(3*wLc, 4*wLc);
+    float unit =random(wLc, 4*wLc);
     println("Unit:"+unit);
     stroke(255);
     strokeCap(PROJECT);
-strokeWeight(random(25,75));
+strokeWeight(random(wLc,wLc*8));
     float pH = s[0].length()+unit;
-   line(0,10*s[0].length()+unit,10*s[0].length(),unit); 
+    float a=random(1,10);
+   line(0,a*s[0].length()+unit,a*s[0].length(),unit); 
 for (int i=1; i<tL; i++){
 int pL=s[i].length();
 //strokeWeight(3);
-line(0,10*pH+unit,10*pL,10*(pH-pL)+unit);
+line(0,a*pH+unit,a*pL,a*(pH-pL)+unit);
 println(10*pH+unit);
-text(s[i],0,10*pH+unit,10*pL,10*(pH-pL)+unit);
+//text(s[i],0,a*pH+unit,a*pL,a*(pH-pL)+unit);
 pH+=unit;
 println("pH:" + pH);
 /*
@@ -208,7 +214,7 @@ float countWLc(int wl) {
       // calc = 50*(1/(wl - 8));
   }
    if ((wl>=20)&&(wl<30)){
-       calc = (30 - wl) *0.85;
+       calc = (30 - wl) *0.5;
       // calc = 50*(1/(wl - 8));
   }
    if ((wl>=30)&&(wl<40)){
