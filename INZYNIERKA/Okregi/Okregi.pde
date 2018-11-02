@@ -122,6 +122,20 @@ void keyPressed() {
     // noLoop();
     // drawVerses();
   }
+  if (key == 's')
+grid.drawTitle();
+println("tytuł");
+  noFill();
+if (key == 'a'){
+grid.drawAuthor();
+println("autor");
+  noFill();
+}
+  if (key == 'd'){
+  grid.drawTitleAndAuthor();
+  println("tytuł i autor");
+  noFill();
+  }
 }
 
 float countWLc(int wl) {
