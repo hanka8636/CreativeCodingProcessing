@@ -39,20 +39,20 @@ void drawBricks() {
       float c = map(current, 1, sum, 0, width);
       y = map(t.length/2, 1, t.length+15, 0, height);
       // strokeWeight(t[i]);
-      stroke(150);
+      stroke(175);
       strokeWeight(4);
       line(c, i*y, c, y*(i+1));
       stroke(100);
-      strokeWeight(2);
+      strokeWeight(1.5);
       line(c, i*y, c, y*(i+1));
     }
     sum=0;
     current =0;
-    stroke(150);
+    stroke(175);
     strokeWeight(4);
     line(0, y*i, width, y*i);
     stroke(100);
-    strokeWeight(2);
+    strokeWeight(1.5);
     line(0, y*i, width, y*i);
   }
 }
