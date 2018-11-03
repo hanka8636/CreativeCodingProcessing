@@ -1,6 +1,13 @@
 //Klasa odpowiadająca za typowo plakatowe informacje - tytuł, logo itp
 
 class Grid{
+  
+  PFont pFont1;
+  PFont pFont2;
+// The font must be located in the sketch's 
+// "data" directory to load successfully
+
+String[] titleSplit;  
 String title;
 String author;
 //PFont font
@@ -13,6 +20,47 @@ String author;
   this.title = title;
   this.author = author;
   }
+  
+    Grid(String title, String author, String font1, String font2){
+  this.title = title;
+  titleSplit = splitTokens(title, " ,.!:-?");
+  this.author = author;
+  pFont1 = createFont(font1, 64);
+  pFont2 = createFont(font2, 24);
+  }
+  
+  void drawDistortedTitle(){
+  textFont(pFont1);
+  //fill(0);
+textSize(160);
+  int prevX =0;
+  int x =20;
+  int y =20;
+  for (int i = 0; i<titleSplit.length; i++) {
+    for (int j =0; j<titleSplit[i].length(); j++)
+    {
+      x=int(random(prevX+50, (j+1)*(width/titleSplit[i].length())-50));
+      y=int(random(((height/titleSplit.length)*i)+60, ((i+1)*(height/titleSplit.length)-60)));
+    fill(75*i);
+      text(titleSplit[i].charAt(j), x, y);
+      prevX=x;
+    }
+    prevX=0;
+
+  }
+  
+  }
+  
+  void drawAuthorFont(){
+  int xa = int(random(60,width-60));
+  int ya = int(random(60,height-60));
+  fill(100);
+  textFont(pFont2);
+  textSize(40);
+  text(author, xa, ya);
+  
+  }
+  
   
   void drawTitleAndAuthor(){
    fill(50);

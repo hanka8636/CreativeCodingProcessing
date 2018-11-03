@@ -32,7 +32,7 @@ void setup() {
       stroke(255);
       //fill(255, a+(wLen));
       noFill();
-  file = "pawlikowska.txt";
+  file = "16.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
   sad.setAll();
@@ -43,7 +43,7 @@ void setup() {
   col = color(0,score*0.5,score*0.8);
   stroke(col);
   background(0,0,col);
-  grid = new Grid("Ach, to nie było warte...", "Maria Pawlikowska-Jasnorzewska");
+  grid = new Grid("Zgaśnij księżycu", "Andrzej Bursa","octin spraypaint free.ttf","Lucznik1303Plus.ttf");
   println(score);
 }
  //<>//
@@ -52,6 +52,8 @@ void draw() {
 
   //drawWords(); //<>//
   drawVerses();
+  grid.drawDistortedTitle();
+  grid.drawAuthorFont();
   //countTotalPointsForLetters();
   //if (a%2==0)
 // noLoop();
@@ -123,7 +125,7 @@ void countTotalPointsForLetters() {
   loadPixels();
 
   float xoff = 0.0; // Start xoff at 0
-  float detail = map(random(count, score), 0, width, 0.9, 0.8);
+  float detail = map(random(count, score+50), 0, width, 0.9, 0.8);
   noiseDetail(8, detail);
 
   // For every x,y coordinate in a 2D space, calculate a noise value and produce a brightness value
@@ -177,7 +179,7 @@ float countWLc(int wl) {
      calc =12.5*( 10 - wl);
   }
      if ((wl>=10)&&(wl<20)){
-       calc = (20 - wl) *1.2;
+       calc = (20 - wl) *3.15;
       // calc = 50*(1/(wl - 8));
   }
    if ((wl>=20)&&(wl<30)){
@@ -201,7 +203,7 @@ float countWLc(int wl) {
       // calc = 50*(1/(wl - 8));
   }
   if ((wl>=70)&&(wl<80)){
-       calc = (80 - wl) *0.4;
+       calc = (80 - wl) *0.87;
       // calc = 50*(1/(wl - 8));
   }
   return calc;
