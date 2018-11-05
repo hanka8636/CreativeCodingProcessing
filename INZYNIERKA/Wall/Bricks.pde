@@ -23,7 +23,7 @@ String[] text;
         int current = 0;
      for (int j=0; j<text.length; j++) {
       current+=text[j].length();
-      float c = map(random(current,current), 1, sum, 0, width);
+      float c = map(current, 1, sum, 0, width);
     //  y = map(text.length/2, 1, text.length+15, 0, height);
       // strokeWeight(t[i]);
       stroke(175);

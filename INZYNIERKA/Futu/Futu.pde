@@ -13,7 +13,7 @@ color col =0;
 Grid grid;
 
 void setup(){
-    size(1000,1000);
+    size(707,1000);
   background(0);
   stroke(255);
   strokeWeight(3);
@@ -21,7 +21,7 @@ void setup(){
   frameRate(5);
  //noLoop();
   
-    file = "26.txt";
+    file = "do.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
   sad.setAll();

@@ -1,6 +1,8 @@
 //Klasa odpowiadająca za typowo plakatowe informacje - tytuł, logo itp
 
 class Grid{
+    PFont pFont1;
+  PFont pFont2;
 String title;
 String author;
 //PFont font
@@ -9,19 +11,24 @@ String author;
   this.title = title;
   }
  
-  Grid(String title, String author){
+  Grid(String title, String author, String font1, String font2){
   this.title = title;
   this.author = author;
+  pFont1 = createFont(font1, 64);
+    pFont2 = createFont(font2, 24);
   }
   
-  void drawTitleAndAuthor(){
+  void drawTitleAndAuthor(float a){
    fill(255);
-  int x = int(random(20,80));
-  int y = int(random(50,height-50));
-  textSize(12);
-text(title, x, y);
- textSize(10);
-text(author, x, y-20);
+  int x = int(random(25,a-title.length()));
+  int y = int(random(0,height/4));
+  textFont(pFont2);
+  textSize(20);
+text(author, x, y);
+textFont(pFont1);
+ textSize(20);
+text(title, x, y+20+5);
+noFill();
 }
 
 void drawTitle(){

@@ -32,7 +32,7 @@ void setup() {
       stroke(255);
       //fill(255, a+(wLen));
       noFill();
-  file = "16.txt";
+  file = "jak.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
   sad.setAll();
@@ -43,7 +43,7 @@ void setup() {
   col = color(0,score*0.5,score*0.8);
   stroke(col);
   background(0,0,col);
-  grid = new Grid("Zgaśnij księżycu", "Andrzej Bursa","octin spraypaint free.ttf","Lucznik1303Plus.ttf");
+  grid = new Grid("Jakże ja się uspokoję", "Stanisław Wyspiański","octin spraypaint free.ttf","Lucznik1303Plus.ttf");
   println(score);
 }
  //<>//
@@ -176,7 +176,7 @@ println("autor");
 float countWLc(int wl) {
   float calc = 0;
   if (wl<10) {
-     calc =12.5*( 10 - wl);
+     calc =8.3*( 10 - wl);
   }
      if ((wl>=10)&&(wl<20)){
        calc = (20 - wl) *3.15;

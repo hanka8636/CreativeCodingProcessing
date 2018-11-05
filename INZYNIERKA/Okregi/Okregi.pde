@@ -12,7 +12,7 @@
 //liczba spółgłosek/samogłosek
 
 //połączenia tego samego słowa w kolejnych wersach
-
+float maxRad =0;
 int a = 0;
 String[] text;
 String textLine;
@@ -26,13 +26,13 @@ Grid grid;
 
 void setup() {
   frameRate(1);
-  size(707, 1000);
+  size(808, 1101);
   strokeWeight(10);
     
       stroke(255);
       //fill(255, a+(wLen));
       noFill();
-  file = "26.txt";
+  file = "14.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
   sad.setAll();
@@ -42,7 +42,7 @@ void setup() {
   col = color(0,score*0.5,score*0.8);
   stroke(col);
   background(0,0,col);
-  grid = new Grid("Ach, to nie było warte...", "Maria Pawlikowska-Jasnorzewska");
+  grid = new Grid("Jasna gwiazdo", "John Keats","Lato-Regular.ttf","Lato-Light.ttf");
   println(score);
 }
  //<>//
@@ -51,6 +51,7 @@ void draw() {
 
   //drawWords(); //<>//
   drawVerses();
+  grid.drawTitleAndAuthor(width-maxRad);
   //countTotalPointsForLetters();
   //if (a%2==0)
 // noLoop();
@@ -63,7 +64,7 @@ void drawVerses() {
   text = sad.getVerses();
     int tL = text.length;
     float wLc = countWLc(tL)*5;
-    strokeWeight(wLc/35);
+    strokeWeight(wLc/20);
 
 println("tL" + tL);
  //<>//
@@ -72,8 +73,10 @@ println("tL" + tL);
 
     Okrag o = new Okrag(words, wLc);
     o.countSpaces(180);
-    o.drawCircle(i);
-     
+   float rad = o.drawCircle(i);
+    
+     if (rad > maxRad)
+     maxRad = rad;
     
     }
 
@@ -132,7 +135,7 @@ println("autor");
   noFill();
 }
   if (key == 'd'){
-  grid.drawTitleAndAuthor();
+  //grid.drawTitleAndAuthor();
   println("tytuł i autor");
   noFill();
   }
@@ -144,7 +147,7 @@ float countWLc(int wl) {
      calc =6*( 10 - wl);
   }
      if ((wl>=10)&&(wl<20)){
-       calc = (20 - wl) *1.2;
+       calc = (20 - wl) *2.52;
       // calc = 50*(1/(wl - 8));
   }
    if ((wl>=20)&&(wl<30)){
@@ -156,7 +159,7 @@ float countWLc(int wl) {
       // calc = 50*(1/(wl - 8));
   }
   if ((wl>=40)&&(wl<50)){
-       calc = (50 - wl) *0.35;
+       calc = (50 - wl) *0.58;
       // calc = 50*(1/(wl - 8));
   }
     if ((wl>=50)&&(wl<60)){

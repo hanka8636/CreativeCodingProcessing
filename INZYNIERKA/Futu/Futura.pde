@@ -18,15 +18,15 @@ void futura(){
    int randY = int(random(-350, 450));
   pushMatrix();
   translate(randX, randY);
-  strokeWeight(5*versesL.length);
-  ellipse(width/2, height/2, int(1.5*radius), int(1.5*radius));
+  strokeWeight(versesL.length);
+  ellipse(width/2, height/2, int(0.5*radius), int(0.5*radius));
   
   for (int i=0; i<versesL.length; i++){
     pushMatrix();
     translate(width/2, height/2);
     rotate(radians(random(360)));
-    strokeWeight(int(2*0.05*versesL[i]));
-    ellipse(0, 0, int(radius*1.5), versesL[i]);
+    strokeWeight(int(0.05*versesL[i]));
+    ellipse(0, 0, int(radius*0.5), versesL[i]);
     popMatrix();
   }
   popMatrix();

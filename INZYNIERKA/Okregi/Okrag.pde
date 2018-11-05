@@ -18,7 +18,7 @@ String[] text;
     space = int(random(a/(text.length-1)-10,a/(text.length-1)));
   }
 
-  void drawCircle(int i) {
+  float drawCircle(int i) {
     float radius = rad*(i+1);
       int e =270;
       int b=0;
@@ -45,5 +45,6 @@ String[] text;
       }
       e=270; b=0;
       arc(width/2+100, height/2, radius-15, radius-15, radians(270),radians(263));
+      return radius;
     }
   }

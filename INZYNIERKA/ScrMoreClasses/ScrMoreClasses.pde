@@ -1,4 +1,4 @@
-//Parametry, które można wizualizować: //<>// //<>// //<>// //<>//
+//Parametry, które można wizualizować: //<>// //<>// //<>// //<>// //<>// //<>// //<>//
 // a - liczba punktów za słowo
 //wLen - długość słowa
 //occurance w SplitAndDict - liczba wystąpień słowa w tekście
@@ -26,7 +26,7 @@ Grid grid;
 
 void setup() {
   frameRate(5);
-  size(905, 1280);
+  size(707, 1000);
   strokeWeight(1);
   file = "pawlikowska.txt";
   sad = new SplitAndDict(file);
@@ -35,40 +35,43 @@ void setup() {
   textLine = sad.getOneLiner();
   sad.createLettersDict();
   score = sp.countPoints(textLine);
-  col = color(0,score*0.5,score*0.8);
+  col = color(0, score*0.5, score*0.8);
   stroke(col);
-  background(0,0,col);
-  grid = new Grid("Ach, to nie było warte...", "Maria Pawlikowska-Jasnorzewska");
+  background(0, 0, col);
+  grid = new Grid("Ach, to nie było warte...", "Maria Pawlikowska-Jasnorzewska", "ebrima.ttf", "ebrimabd.ttf");
   println(score);
 }
- //<>//
-void draw() {
-  background(0,score*0.5,score*0.8);
 
-  //drawWords(); //<>//
+void draw() {
+  //  background(0,90);
+  noStroke();
+  fill(0, 90);
+  rect(0, 0, width, height);
+  //drawWords();
   drawVerses();
+
   //countTotalPointsForLetters();
   //if (a%2==0)
- //noLoop();
- // else
- // loop();
+  //noLoop();
+  // else
+  // loop();
 }
 
 //Metoda rysuje Wizualizację słów w wersach
 void drawVerses() {
   text = sad.getVerses();
-    int tL = text.length;
-    float wLc = countWLc(tL);
+  int tL = text.length;
+  float wLc = countWLc(tL);
 
-println("tL" + tL);
-  int x = 20;
+  println("tL" + tL);
+  int x = 20+int(random(20));
   int y = 20;
   int prevX = x;
   int prevY = y; 
   int wLen = 0;
   int a = 0;
   //int prevI = 0;
-  int maxA = 0; //<>//
+  int maxA = 0;
   for (int i=0; i<text.length; i++) {
     String[] words = splitTokens(text[i], " ,.!:-?");
 
@@ -80,19 +83,19 @@ println("tL" + tL);
       if (a>maxA) maxA = a;
       // println("punkty" + " " + words[j] + " " + a/5);
       //print(words[j] + " ");
-      wLen = int(words[j].length()*40);  
+      wLen = int(words[j].length()*30);  
       //println("litery" +wLen/5);
-     // textSize(a/(2.5*tL));
+      // textSize(a/(2.5*tL));
       //text(words[j], x+30, y);
       strokeWeight((a+wLen)/20);
-      stroke(255,(a+wLen)/2);
+      stroke(255, (a+wLen)/2);
       //fill(255, a+(wLen));
       noFill();
       rect(x, y, wLen, a);
       //if ((prevI != i)&&(j==0))
-       // strokeWeight(2);
-       // else
-       //       strokeWeight(wLen/2);
+      // strokeWeight(2);
+      // else
+      //       strokeWeight(wLen/2);
 
 
       //prevX = x;
@@ -102,15 +105,14 @@ println("tL" + tL);
       //println("x "+ x);
     }
     println();
-      prevX = x;//+a;
-      prevY = y+wLen;
+    prevX = x;//+a;
+    prevY = y+wLen;
     x= int(random(wLen/3));
     y+= maxA; //int(random(score/20))+
-         // stroke(2);
-      //stroke(a*3);
-//      line(prevX, prevY, x, y);
-          maxA =0;
-
+    // stroke(2);
+    //stroke(a*3);
+    //      line(prevX, prevY, x, y);
+    maxA =0;
   }
   a = 0; 
   wLen = 0;
@@ -135,7 +137,7 @@ void drawWords() {
     x= int(random(wLen*4));
 
     rect(x, y, wLen, a);
-   // println("x "+ x);
+    // println("x "+ x);
     y+=i*int(random(wLen));// + wLen;
   }
 } 
@@ -151,13 +153,16 @@ void countTotalPointsForLetters() {
     {
       totalPointsForLetter.set(letter, totalPointsForLetter.get(letter)*sadD.get(letter));
     }
-  //  println(totalPointsForLetter);
+    //  println(totalPointsForLetter);
   }
 }
 
 void keyPressed() {
   if (key == ' ') {
     a++;
+    grid.drawTitle();
+    // grid.drawDistortedTitle();
+    grid.drawAuthorFont();
     println("SPACJA");
     saveFrame("#####.png");
     // noLoop();
@@ -168,43 +173,43 @@ void keyPressed() {
 float countWLc(int wl) {
   float calc = 0;
   if (wl<10) {
-     calc =6*( 10 - wl);
+    calc =5.85*( 10 - wl);
   }
-     if ((wl>=10)&&(wl<20)){
-       calc = (20 - wl) *1.2;
-      // calc = 50*(1/(wl - 8));
+  if ((wl>=10)&&(wl<20)) {
+    calc = (20 - wl) *1.2;
+    // calc = 50*(1/(wl - 8));
   }
-   if ((wl>=20)&&(wl<30)){
-       calc = (30 - wl) *0.85;
-      // calc = 50*(1/(wl - 8));
+  if ((wl>=20)&&(wl<30)) {
+    calc = (30 - wl) *0.85;
+    // calc = 50*(1/(wl - 8));
   }
-   if ((wl>=30)&&(wl<40)){
-       calc = (40 - wl) *0.5;
-      // calc = 50*(1/(wl - 8));
+  if ((wl>=30)&&(wl<40)) {
+    calc = (40 - wl) *0.5;
+    // calc = 50*(1/(wl - 8));
   }
-  if ((wl>=40)&&(wl<50)){
-       calc = (50 - wl) *0.35;
-      // calc = 50*(1/(wl - 8));
+  if ((wl>=40)&&(wl<50)) {
+    calc = (50 - wl) *0.35;
+    // calc = 50*(1/(wl - 8));
   }
-    if ((wl>=50)&&(wl<60)){
-       calc = (60 - wl) *0.3;
-      // calc = 50*(1/(wl - 8));
+  if ((wl>=50)&&(wl<60)) {
+    calc = (60 - wl) *0.3;
+    // calc = 50*(1/(wl - 8));
   }
-      if ((wl>=60)&&(wl<70)){
-       calc = (70 - wl) *0.65;
-      // calc = 50*(1/(wl - 8));
+  if ((wl>=60)&&(wl<70)) {
+    calc = (70 - wl) *0.65;
+    // calc = 50*(1/(wl - 8));
   }
-  if ((wl>=70)&&(wl<80)){
-       calc = (80 - wl) *0.4;
-      // calc = 50*(1/(wl - 8));
+  if ((wl>=70)&&(wl<80)) {
+    calc = (80 - wl) *0.4;
+    // calc = 50*(1/(wl - 8));
   }
   return calc;
 }
 
 
-void mousePressed(){
+void mousePressed() {
   if (mouseButton == LEFT)
-grid.drawTitleM();
- if (mouseButton == RIGHT)
-grid.drawAuthorM();
+    grid.drawTitleM();
+  if (mouseButton == RIGHT)
+    grid.drawAuthorM();
 }
