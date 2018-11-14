@@ -55,7 +55,7 @@ void setup() {
   col = color(0, score*0.5, score*0.8);
   stroke(col);
   background(0, 0, col);
-  grid = new Grid("Jakże ja się uspokoję", "Stanisław Wyspiański", "Montserrat-Regular.ttf", "Montserrat-Light.ttf");
+  grid = new Grid("Fragmenta I", "Jan Kochanowski", "ebrima.ttf", "ebrima.ttf");
   println(score);
 }
 
@@ -103,7 +103,10 @@ translate(0,0,wall.brickHeight);
 
    // o.drawBricks(i);
   }
+
 }
+
+
 
 
 void drawNoise()
@@ -139,6 +142,9 @@ void keyPressed() {
   if (key == ' ') {
     a++;
     println("SPACJA");
+       fill(255);
+  textSize(12);
+  grid.showTextInHUD();
     saveFrame("#####.png");
     // noLoop();
     // drawVerses();
