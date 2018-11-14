@@ -26,6 +26,25 @@ class Grid {
     pFont1 = createFont(font1, 64);
     pFont2 = createFont(font2, 24);
   }
+  
+  void showTextInHUD() {
+  // A small 2D HUD for text in the
+  // upper left corner. 
+  // This func may only be called a the very end of draw() afaik.
+  camera();
+  hint(DISABLE_DEPTH_TEST);
+ // noLights();
+  textMode(SHAPE);
+  smooth();
+  textSize(40);
+  float x = random(80, width-100);
+  float y = random(80,height-100);
+    text(title, x, y);
+   textSize(28); 
+   fill(200,255,255);
+   text(author, x, y+40);
+  hint(ENABLE_DEPTH_TEST);
+} // func 
 
   void drawDistortedTitle() {
     textFont(pFont1);
@@ -39,7 +58,7 @@ class Grid {
       {
         x=int(random(prevX+40, (j+1)*(width/titleSplit[i].length())-40));
         y=int(random(((height/titleSplit.length)*i)+120, ((i+1)*(height/titleSplit.length)-80)));
-        fill(75*i);
+        fill(120+10*i,255,255);
         text(titleSplit[i].charAt(j), x, y);
         prevX=x;
       }

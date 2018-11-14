@@ -6,6 +6,7 @@ class SplitAndDict {
   String[] keys;
   IntDict letters;
   String[] lettersKeys;
+  int countLongest;
 
   //Konstruktor
   SplitAndDict(String file) {
@@ -61,6 +62,20 @@ class SplitAndDict {
   //MEtoda zwraca tekst w jednej lini
   String getOneLiner() {
     return textOneLine;
+  }
+  
+  int getLengthOfTheLongest(){
+    int theLongest = 0;
+    int a =0;
+  for(int i=0; i<text.length; i++){
+    if (text[i].length() > theLongest){
+    theLongest = text[i].length();
+    a=i;
+  }
+  }
+   String[] wordsL = splitTokens(text[a], " ,.!:-?");
+   countLongest=wordsL.length;
+return theLongest;
   }
 
   //Metoda tworzy słownik liter z tekstu

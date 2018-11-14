@@ -26,19 +26,19 @@ String[] text;
       float c = map(current, 1, sum, 0, width);
     //  y = map(text.length/2, 1, text.length+15, 0, height);
       // strokeWeight(t[i]);
-      stroke(175);
+      stroke(140,255,80);
       strokeWeight(4);
       line(c, i*rad, c, rad*(i+1));
-      stroke(100);
+      stroke(140,255,160);
       strokeWeight(1.5);
       line(c, i*rad, c, rad*(i+1));
     }
     sum=0;
     current =0;
-    stroke(175);
+    stroke(140,255,80);
     strokeWeight(4);
     line(0, rad*i, width, rad*i);
-    stroke(100);
+    stroke(140,255,160);
     strokeWeight(1.5);
     line(0, rad*i, width, rad*i);
   }
