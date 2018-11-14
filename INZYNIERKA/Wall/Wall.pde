@@ -12,6 +12,10 @@
 //liczba spółgłosek/samogłosek
 
 //połączenia tego samego słowa w kolejnych wersach
+
+import peasy.*; //<>// //<>//
+Wall3D wall;
+PeasyCam cam;
 float increment = 0.02;
 int a = 0;
 String[] text;
@@ -22,18 +26,23 @@ String file;
 int score, count;
 IntDict totalPointsForLetter;
 color col =0;
+float depth =0;
 Grid grid;
 
 void setup() {
   colorMode(HSB);
-  frameRate(1);
-  size(707, 1000);
+ depth =1800;
+  cam = new PeasyCam(this, width/2, height/2, depth/2, depth*1.25); //generate the camera
+  size(707, 1000, P3D);
+  noFill();
+ 
+  setupCamera();
   strokeWeight(10);
 
   stroke(255);
   //fill(255, a+(wLen));
   noFill();
-  file = "jak.txt";
+  file = "26.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
   sad.setAll();
@@ -41,6 +50,8 @@ void setup() {
   sad.createLettersDict();
   score = sp.countPoints(textLine);
   count = textLine.length();
+  
+   wall = new Wall3D(sad.getLengthOfTheLongest(),sad.countLongest,sad.text.length);
   col = color(0, score*0.5, score*0.8);
   stroke(col);
   background(0, 0, col);
@@ -49,78 +60,51 @@ void setup() {
 }
 
 void draw() {
-  background(0);
-
+  background(0,50);
+ 
   //drawWords();
+  pushMatrix();
   drawVerses();
-  grid.drawDistortedTitle();
-  grid.drawAuthorFont();
+  popMatrix();
+  //grid.drawDistortedTitle();
+ // grid.drawAuthorFont();
   //countTotalPointsForLetters();
   //if (a%2==0)
   // noLoop();
   // else
   // loop();
+  rotateCamera();
 }
 
 //Metoda rysuje Wizualizację słów w wersach
 void drawVerses() {
-  drawNoise();
-  fill(180, 255, 255, 25);
-  rect(0, 0, width, height);
+//  drawNoise();
+//  fill(180, 255, 255, 25);
+ // rect(0, 0, width, height);
   text = sad.getVerses();
   int tL = text.length;
   float wLc = countWLc(tL)*5;
   noFill();
-  strokeWeight(wLc/35);
+  stroke(200,255,255);
+  strokeWeight(1.5);
 
   println("tL" + tL);
 
-  for (int i=0; i<text.length; i++) {
-    String[] words = splitTokens(text[i], " ,.!:-?");
+  for (int i=(text.length-1); i>=0; i--) { //<>//
+    String[] words = splitTokens(text[i], " ,.!:-?"); //<>//
 
-    Bricks o = new Bricks(words, wLc);
+  //  Bricks o = new Bricks(words, wLc);
+  pushMatrix();
+wall.drawBricks(words,0);
+popMatrix();
+translate(0,0,wall.brickHeight);
+  //  o.countSum();
 
-    o.countSum();
 
-
-    o.drawBricks(i);
+   // o.drawBricks(i);
   }
 }
 
-//Metoda wizualizuje słowa, każde w kolejnej lini
-void drawWords() {
-  text = sad.getWords();
-  int x = 10;
-  int y = 30;
-
-  for (int i=0; i<text.length; i++) {
-    int a = sp.countPoints(text[i])*40;
-    //println("punkty" + " " + text[i] + " " + a/5);
-
-    int wLen = text[i].length()*5;  
-    println("litery" +wLen/5);
-    x= int(random(wLen*4));
-
-    rect(x, y, wLen, a);
-    // println("x "+ x);
-    y+=i*int(random(wLen));// + wLen;
-  }
-} 
-
-//Metoda liczy ile w tekście jest punktów za daną literę
-void countTotalPointsForLetters() {
-  IntDict sadD = sad.getDictLeters();
-  totalPointsForLetter=sp.getDict();
-  String[] as = sp.getKeys();
-  for (int i=0; i<totalPointsForLetter.size(); i++) {
-    String letter = as[i];
-    if (sadD.hasKey(letter) == true)
-    {
-      totalPointsForLetter.set(letter, totalPointsForLetter.get(letter)*sadD.get(letter));
-    }
-    //  println(totalPointsForLetter);
-  }
-}
 
 void drawNoise()
 {
@@ -160,11 +144,11 @@ void keyPressed() {
     // drawVerses();
   }
   if (key == 's')
-    grid.drawTitle();
+    grid.drawTitleM();
   println("tytuł");
   noFill();
   if (key == 'a') {
-    grid.drawAuthor();
+    grid.drawAuthorM();
     println("autor");
     noFill();
   }
@@ -211,6 +195,15 @@ float countWLc(int wl) {
   return calc;
 }
 
+void setupCamera() {
+
+  cam.rotateY(radians(90));
+  cam.rotateZ(radians(-90));
+}
+
+void rotateCamera() {
+  cam.rotateY(radians(1));
+}
 
 void mousePressed() {
   if (mouseButton == LEFT)
