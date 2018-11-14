@@ -39,7 +39,7 @@ class Grid {
       {
         x=int(random(prevX+40, (j+1)*(width/titleSplit[i].length())-40));
         y=int(random(((height/titleSplit.length)*i)+120, ((i+1)*(height/titleSplit.length)-80)));
-        fill(120+10*i,255,255);
+        fill(75*i);
         text(titleSplit[i].charAt(j), x, y);
         prevX=x;
       }

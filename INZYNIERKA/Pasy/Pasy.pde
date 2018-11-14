@@ -32,7 +32,7 @@ void setup() {
   frameRate(1);
   size(707, 1000);
   strokeWeight(1);
-  file = "slowka.txt";
+  file = "j.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
   sad.setAll();
