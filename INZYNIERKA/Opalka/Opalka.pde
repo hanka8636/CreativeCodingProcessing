@@ -29,7 +29,7 @@ void setup() {
   frameRate(5);
   size(707, 1000);
   strokeWeight(1);
-  file = "26.txt";
+  file = "fragmentaI.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
   sad.setAll();
@@ -41,7 +41,7 @@ void setup() {
   background(0, 0, col);
   grid = new Grid("Ach, to nie było warte...", "Maria Pawlikowska-Jasnorzewska", "ebrima.ttf", "ebrimabd.ttf");
   println(score);
-     con = new Conventer(textLine);
+     con = new Conventer(textLine,"Arvo-Regular.ttf");
      con.convertWords();
 }
 
@@ -76,41 +76,7 @@ void keyPressed() {
   }
 }
 
-float countWLc(int wl) {
-  float calc = 0;
-  if (wl<10) {
-    calc =5.85*( 10 - wl);
-  }
-  if ((wl>=10)&&(wl<20)) {
-    calc = (20 - wl) *1.2;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=20)&&(wl<30)) {
-    calc = (30 - wl) *0.85;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=30)&&(wl<40)) {
-    calc = (40 - wl) *0.5;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=40)&&(wl<50)) {
-    calc = (50 - wl) *0.35;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=50)&&(wl<60)) {
-    calc = (60 - wl) *0.3;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=60)&&(wl<70)) {
-    calc = (70 - wl) *0.65;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=70)&&(wl<80)) {
-    calc = (80 - wl) *0.4;
-    // calc = 50*(1/(wl - 8));
-  }
-  return calc;
-}
+
 
 
 void mousePressed() {
