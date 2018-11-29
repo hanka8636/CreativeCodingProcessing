@@ -1,10 +1,15 @@
-class Conventer { //<>// //<>// //<>//
+//okrutnie zly kod //<>//
+
+class Conventer { //<>// //<>//
+int alphas[];
   String text;
   String[] words;
   String[] numberWords;
   String numberString;
   int x =0;
   PFont pFont1;
+IntDict dictionary;
+IntDict lett;
 
   int textH = 10;
     int y =textH;
@@ -16,6 +21,35 @@ class Conventer { //<>// //<>// //<>//
     this.words = splitTokens(text, " ,.!:-?");
     convertOneliner();
   }
+
+    Conventer(String text, String font1, IntDict a) {
+    this.pFont1 = createFont(font1, 64);
+    textFont(pFont1);
+    this.text = text;
+    this.words = splitTokens(text, " ,.!:-?");
+    convertOneliner();
+    this.dictionary = a;
+  }
+  
+  void countWordAlpha(){
+    alphas = new int[words.length];
+  for(int i = 0; i<words.length; i++){
+    if (dictionary.hasKey(words[i]) == true)
+      {
+        alphas[i] = dictionary.get(words[i])*5 +50;
+      }
+  }
+  } 
+  
+    void countLetterAlpha(){
+    alphas = new int[words.length];
+  for(int i = 0; i<words.length; i++){
+    if (dictionary.hasKey(words[i]) == true)
+      {
+        alphas[i] = dictionary.get(words[i])*5 +50;
+      }
+  }
+  } 
 
   void convertOneliner() {
     for (int i=0; i<text.length(); i++) {
@@ -37,8 +71,8 @@ class Conventer { //<>// //<>// //<>//
     }
   }
 
-  void drawConvertedText() {
-
+  void drawConvertedText(int u) {
+fill(255,50);
 
     for (int i=0; i<numberWords.length; i++) {
       String word = null;
@@ -46,9 +80,15 @@ class Conventer { //<>// //<>// //<>//
       textSize(textH);
       // if ( word ==032)
       //rect(x,y,textWidth(word),textH);
+      if (u==0)
+      fill(255);
+              if (u==1)
+        fill(255, alphas[i]);
       for (int j=3; j<numberWords[i].length(); j+=3) {
         if ((i==0)&&(j==3)) x=0;
         word= numberWords[i].substring(j-3, j);
+      if (u==2)
+        fill(255, alphas[i]);
         text(word, x, y);
         // Move along the x-axis
         x += textWidth(word);
@@ -69,7 +109,7 @@ class Conventer { //<>// //<>// //<>//
     int nsl = numberString.length();
    float wlc= countWLc(nsl);
    int mp = int(200*wlc*0.01);
-    int q =  int(map(nsl, 2, 1200*wlc, mp, 2)); //<>//
+    int q =  int(map(nsl, 2, 1200*wlc, mp, 2));
     textH=constrain(a, 0, q);
     if (a<q)
       a++;
