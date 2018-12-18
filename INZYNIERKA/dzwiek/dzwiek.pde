@@ -5,6 +5,12 @@ Minim minim;
 AudioPlayer myAudio;
 FFT fft;
 
+int i =0;
+float maxLast = 0;
+
+AudioPlayer[] files;
+int[] nums = {7,6,9,5,4,12,7,5,8,10,4,7,9,6};
+
 int audioRange = 12;
 int audioMax = 100;
 
@@ -18,6 +24,8 @@ int stageMargin;
 int stageWidth = (audioRange*rectSize) + (stageMargin*2);
 float xStart;
 float yStart;
+
+float y = yStart;
 int xSpacing = rectSize;
 
 color bgColor = #333333;
@@ -25,7 +33,7 @@ color bgColor = #333333;
 void setup()
 {
   
-  size(707, 800);
+  size(707, 1000);
   stageMargin = (width - (rectSize * audioRange))/2;
   if (stageMargin < 0){
     rectSize /= 1.75;
@@ -34,16 +42,28 @@ void setup()
   }
   
   xStart = stageMargin;
- yStart = 20;
+ yStart = 50;
  background(bgColor);
   // always start Minim first!
   minim = new Minim(this);
+  
+  files = new AudioPlayer[13];
+  //nums = new int[13];
+  
+  
+
+  // Load 5 soundfiles from a folder in a for loop. By naming 
+  // the files 1., 2., 3., [...], n.aif it is easy to iterate 
+  // through the folder and load all files in one line of code.
+  for (int i = 0; i < files.length; i++) {
+    files[i] = minim.loadFile( "c" +(i+1) + ".wav");
+  }
   
  
   // specify 512 for the length of the sample buffers
   // the default buffer size is 1024
   myAudio = minim.loadFile("cialo.wav");
-  myAudio.play();
+  //myAudio.play();
  
   // an FFT needs to know how 
   // long the audio buffers it will be analyzing are
@@ -56,6 +76,27 @@ void setup()
  
 void draw()
 {
+     if (!files[i].isPlaying()) {
+    files[i=(i+1) % 13].play();
+    audioRange = nums[i];
+      stageMargin = (width - (rectSize * audioRange))/2;
+  if (stageMargin < 0){
+    rectSize /= 1.75;
+  stageMargin = (width - (rectSize * audioRange))/2;
+  xSpacing = rectSize;
+  }
+  
+  xStart = stageMargin;
+    }
+
+ fft = new FFT(myAudio.bufferSize(), files[i].sampleRate());
+  fft.linAverages(audioRange);
+  fft.window(FFT.GAUSS);
+   fft.forward(files[i].mix);
+      drawViz(); //<>//
+  //<>//
+  //y=yStart;
+  
   // first perform a forward fft on one of myAudio's buffers
   // I'm using the mix buffer
   //  but you can use any one you like
@@ -67,7 +108,7 @@ void draw()
   // I multiple the value of getBand by 4 
   // so that we can see the lines better
   //for(int i = 0; i < fft.specSize(); i++)
-drawViz();
+//drawViz();
  audioIndexAmp = audioIndex;
  /* stroke(255);
   // I draw the waveform by connecting 
@@ -84,24 +125,37 @@ drawViz();
     
   }
   */
+   countDistY();
 }
 
 void drawViz(){
+  float maxtempIndxAvg =0;
   for(int i = 0; i < audioRange; i++)
   {
       //stroke(0);
       noStroke();
-      fill(255,5);
+      fill(255-(y*5), 255, 255,50);
       float tempIndxAvg = (fft.getAvg(i) * audioAmp) * audioIndexAmp;
-      rect(xStart + (i* xSpacing), yStart, rectSize, tempIndxAvg);
+      if (maxtempIndxAvg < tempIndxAvg)
+      maxtempIndxAvg = tempIndxAvg;
+      rect(xStart + (i* xSpacing), y, rectSize, tempIndxAvg);
     //line(i, height, i, height - fft.getBand(i)*20);
     audioIndexAmp += audioIndexStep;
+    println(y);
   }
+  maxLast = maxtempIndxAvg; //<>//
 }
 
 void stop(){
 myAudio.close();
 minim.stop();
 super.stop();
+
+}
+
+void countDistY(){
+ y += maxLast;  //<>//
+ if (y>height)
+ y =0;
 
 }
