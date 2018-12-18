@@ -12,8 +12,10 @@ int idx;
  
 void setup() {
   Minim m = new Minim(this);
-  (players[0] = m.loadFile("u.wav")).play();
-  players[1]  = m.loadFile("Blue.wav");
+  players[0] = m.loadFile("c1.wav");
+  
+  players[1]  = m.loadFile("c2.wav");
+ //players[0].play();
 }
  
 void draw() {
