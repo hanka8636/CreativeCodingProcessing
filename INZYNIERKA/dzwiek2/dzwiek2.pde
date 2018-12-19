@@ -1,4 +1,4 @@
-import ddf.minim.*; //<>// //<>// //<>// //<>//
+import ddf.minim.*; //<>// //<>// //<>// //<>// //<>// //<>//
 import ddf.minim.analysis.*;
 
 //połączenia tego samego słowa w kolejnych wersach
@@ -27,7 +27,7 @@ int i =0;
 float maxLast = 0;
 
 AudioPlayer[] files;
-int[] nums = {7, 6, 9, 5, 4, 12, 7, 5, 8, 10, 4, 7, 9, 6};
+
 
 int audioRange = 12;
 int audioMax = 100;
@@ -36,6 +36,8 @@ float audioAmp = 40.0;
 float audioIndex = 0.2;
 float audioIndexAmp = audioIndex;
 float audioIndexStep = 0.35;
+
+float[] audioData = new float[audioRange];
 
 int rectSize = 50;
 int stageMargin;
@@ -78,128 +80,65 @@ void setup()
   minim = new Minim(this);
 
   files = new AudioPlayer[13];
-  //nums = new int[13];
 
 
-
-  // Load 5 soundfiles from a folder in a for loop. By naming 
-  // the files 1., 2., 3., [...], n.aif it is easy to iterate 
-  // through the folder and load all files in one line of code.
   for (int i = 0; i < files.length; i++) {
     files[i] = minim.loadFile( "c" +(i+1) + ".wav");
   }
 
 
-  // specify 512 for the length of the sample buffers
-  // the default buffer size is 1024
-  myAudio = minim.loadFile("cialo.wav");
-  //myAudio.play();
-
-  // an FFT needs to know how 
-  // long the audio buffers it will be analyzing are
-  // and also needs to know 
-  // the sample rate of the audio it is analyzing
-  fft = new FFT(myAudio.bufferSize(), myAudio.sampleRate());
-  fft.linAverages(audioRange);
-  fft.window(FFT.GAUSS);
-
-
   files[0].play();
   String[] words = getLine(0);
-  audioRange = words.length;
+  setMargin(words.length);
+
+
+
+  setFFT(0);
+}
+
+void setFFT(int i) {
+  fft = new FFT(files[i].bufferSize(), files[i].sampleRate());
+  fft.linAverages(audioRange);
+  fft.window(FFT.GAUSS);
+  fft.forward(files[i].mix);
+  drawViz(50*(i+1));
+}
+
+void setMargin(int a) {
+  audioRange = a;
   stageMargin = (width - (rectSize * audioRange))/2;
   if (stageMargin < 0) {
     rectSize /= 1.75;
     stageMargin = (width - (rectSize * audioRange))/2;
     xSpacing = rectSize;
   }
-
   xStart = stageMargin;
-
-
-  fft = new FFT(myAudio.bufferSize(), files[0].sampleRate());
-  fft.linAverages(audioRange);
-  fft.window(FFT.GAUSS);
-  fft.forward(files[0].mix);
-  drawViz(0);
 }
-
 void draw()
 {
   int num  = text.length;
-  if (i<=num-1) {
+  if (i<num-2) {
     if (!files[i].isPlaying()) {
-      files[i=(i+1)].play(); //<>//
+      files[i=(i+1)].play();
       String[] words = getLine(i);
-      audioRange = words.length;
-      stageMargin = (width - (rectSize * audioRange))/2;
-      if (stageMargin < 0) {
-        rectSize /= 1.75;
-        stageMargin = (width - (rectSize * audioRange))/2;
-        xSpacing = rectSize;
-      }
-
-      xStart = stageMargin;
+      setMargin(words.length);
     }
 
-    fft = new FFT(myAudio.bufferSize(), files[i].sampleRate());
-    fft.linAverages(audioRange);
-    fft.window(FFT.GAUSS);
-    fft.forward(files[i].mix);
-    drawViz(50*(i+1));
+    setFFT(i);
 
-    //y=yStart;
-
-    // first perform a forward fft on one of myAudio's buffers
-    // I'm using the mix buffer
-    //  but you can use any one you like
-    fft.forward(myAudio.mix);
-
-
-
-    // draw the spectrum as a series of vertical lines
-    // I multiple the value of getBand by 4 
-    // so that we can see the lines better
-    //for(int i = 0; i < fft.specSize(); i++)
-    //drawViz();
     audioIndexAmp = audioIndex;
-    /* stroke(255);
-     // I draw the waveform by connecting 
-     // neighbor values with a line. I multiply 
-     // each of the values by 50 
-     // because the values in the buffers are normalized
-     // this means that they have values between -1 and 1. 
-     // If we don't scale them up our waveform 
-     // will look more or less like a straight line.
-     for(int i = 0; i < myAudio.left.size() - 1; i++)
-     {
-     line(i, 50 + myAudio.left.get(i)*50, i+1, 50 + myAudio.left.get(i+1)*50);
-     line(i, 150 + myAudio.right.get(i)*50, i+1, 150 + myAudio.right.get(i+1)*50);
-     
-     }
-     */
-    //   countDistY();
-  }
-  else { //<>//
-  files[num-2].play();
+  } else {
+    if (!files[i-1].isPlaying()) {
+      files[i].play();
       String[] words = getLine(i);
-      audioRange = words.length;
-      stageMargin = (width - (rectSize * audioRange))/2;
-      if (stageMargin < 0) {
-        rectSize /= 1.75;
-        stageMargin = (width - (rectSize * audioRange))/2;
-        xSpacing = rectSize;
-      }
+      setMargin(words.length);
+    }
 
-      xStart = stageMargin;
-    
+    setFFT(i);
 
-    fft = new FFT(myAudio.bufferSize(), files[num-2].sampleRate());
-    fft.linAverages(audioRange);
-    fft.window(FFT.GAUSS);
-    fft.forward(files[num-2].mix);
-    drawViz(50*(num-1));
-  stop();}
+    audioIndexAmp = audioIndex;
+    stop();
+  }
 }
 
 void drawViz(int y) {
@@ -221,7 +160,7 @@ void drawViz(int y) {
 }
 
 void stop() {
-  myAudio.close();
+  files[12].close();
   minim.stop();
   super.stop();
 }
