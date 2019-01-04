@@ -107,6 +107,7 @@ void setMargin(int a) {
 }
 void draw()
 {
+  //background(0);
     int[] a = getAllLinesLength();
   int num  = text.length;
 
@@ -149,9 +150,9 @@ void drawViz(int y, int wl) {
       strokeWeight(3);
       int fftAlpha = (int)map(audioData[(int)random(audioData.length-1)], 0, audioMax, 0, 255);
     
-     stroke(255, 255, 255,fftAlpha/10); 
+     stroke(255-5*i, 255, 255,fftAlpha/5); 
      //rectMode(CENTER);
-    rect(xStart + (i* xSpacing), y, rectSize, rectSize);
+    ellipse(xStart + (i* xSpacing), y, rectSize*(int)random(5), rectSize);
     //line(i, height, i, height - fft.getBand(i)*20);
    
     println(y);
@@ -160,6 +161,7 @@ void drawViz(int y, int wl) {
 }
 
 void audioDataUpdate(){
+  
 for(int i =0; i< audioRange; ++i){
 float tempIndexAvg = (fft.getAvg(i) * audioAmp) * audioIndexAmp;
 float tempIndexCon = constrain(tempIndexAvg, 0, audioMax);

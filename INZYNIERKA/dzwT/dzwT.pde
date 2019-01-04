@@ -15,8 +15,9 @@ float audioIndexAmp = audioIndex;
 float audioIndexStep = 0.35;
 
 float[] audioData = new float[audioRange];
+AudioPlayer[] audio = new AudioPlayer[13];
 
-HDrawablePool pool;
+HDrawablePool[] pool;
 int poolMax = 25;
 
 color[] palette = {#FF3300, #FF620C, #ff9519, #0095A8, #FFC725, #F8EF33, #FFFF33, #CCEA4A, #9AD561, #64BE7A, #2EA893, #453FF6};
@@ -32,9 +33,10 @@ void setup() {
   fft = new FFT(myAudio.bufferSize(), myAudio.sampleRate());
   fft.linAverages(audioRange);
   fft.window(FFT.GAUSS);
-
-  pool = new HDrawablePool(poolMax);
-  pool.autoAddToStage()
+  pool = new HDrawablePool[5];
+for(int k =0; k<5; k++){
+  pool[k] = new HDrawablePool(poolMax);
+  pool[k].autoAddToStage()
     .add(new HRect(100).rounding(10))
     .layout (new HGridLayout().startX(50).startY(height/2).spacingX(25).cols(poolMax))
     .onCreate(
@@ -44,13 +46,18 @@ void setup() {
       HDrawable d = (HDrawable) obj;
       d.
         noStroke()
-        .fill(palette[ranIndex], 15)
+        .fill(palette[ranIndex], 10)
         .anchorAt(H.CENTER)
         .rotation(45)
+       // .scale(ranIndex*0.5)
         .extras(new HBundle().num("i", ranIndex));
     }
   }
   ).requestAll();
+
+}
+
+
   //background(0);
 }
 
@@ -59,9 +66,12 @@ void draw() {
   fft.forward(myAudio.mix);
   audioDataUpdate();
 //  background(0);
+for(int j=0; j<5; j++){
+pushMatrix();
+translate(0,-400 +(160*j));
   H.drawStage();
-
-  for (HDrawable d : pool) {
+popMatrix();
+  for (HDrawable d : pool[j]) {
     
     HBundle tempExtra = d.extras();
     int i = (int)tempExtra.num("i");
@@ -69,6 +79,8 @@ void draw() {
     int fftAlpha = (int)map(audioData[i], 0, audioMax, 0, 255);
     d.alpha(fftAlpha);
   }
+  
+}
 }
 
 void audioDataUpdate(){

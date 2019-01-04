@@ -17,7 +17,7 @@ int score;
 IntDict totalPointsForLetter;
 color col =0;
 Grid grid;
-
+int lang;
 
 Minim minim;
 AudioPlayer myAudio;
@@ -28,6 +28,8 @@ float maxLast = 0;
 
 AudioPlayer[] files;
 
+float h = 0;
+float step = 0;
 
 int audioRange = 12;
 int audioMax = 100;
@@ -50,8 +52,13 @@ int xSpacing = rectSize;
 
 color bgColor = #333333;
 
+String author =null;
+String title = null;
+String speaker = null;
+ color genColor;
 void setup()
 {
+    size(707, 1000);
   file = "cialo.txt";
   sad = new SplitAndDict(file);
   sp = new ScrabblePoints("pl");
@@ -59,13 +66,39 @@ void setup()
   textLine = sad.getOneLiner();
   sad.createLettersDict();
   score = sp.countPoints(textLine);
+   text =sad.getText();
+  //TU!
+  countHandStep(text.length);
+  println(h);
+  audioAmp = h;
+ colorMode(HSB);
+  author = "Bolesław Leśmian";
+  title = "Jak niewiele ma znaków to ubogie ciało";
+  speaker = "kobieta, 22 lata, studentka"; 
+  String l = "PL";
+  for (int i =0; i<l.length();i++){
+  int ascii = l.charAt(i);
+  lang+=ascii;
+  }
+  println("LANG"+lang);
+  float temp = 255-(3*author.length());
+  println("TEP" +temp);
+   genColor =color(255-(2*author.length()), 255, 255-(3*title.length())); //<>//
   //col = color(0,score*0.5,score*0.8);
   stroke(0);
-  background(0, 0, col);
-  grid = new Grid("Pożegnanie", "Tadeusz Boy-Żelański", "Exo-Regular.ttf", "Exo-Thin.ttf");
-  text =sad.getText();
+  background(lang, 80, 50);
+  grid = new Grid(title, author, "Exo-Regular.ttf", "Exo-Thin.ttf");
+ stroke(255);
+  line(0,50,width,50);
+   line(0,height-50,width,height-50);
+    line(0,height-100,width,height-100);
+    line(0,height-150,width,height-150);
+    textSize(12);
+    text(author,50, height-125);
+    text(title,50, height-75);
+    text(speaker,width/2+50, height-50);
+    noStroke();
 
-  size(707, 1000);
   stageMargin = (width - (rectSize * audioRange))/2;
   if (stageMargin < 0) {
     rectSize /= 1.75;
@@ -74,12 +107,12 @@ void setup()
   }
 
   xStart = stageMargin;
-  yStart = 50;
-  background(bgColor);
+  yStart = 100;
+  //background(bgColor);
   // always start Minim first!
   minim = new Minim(this);
 
-  files = new AudioPlayer[13];
+  files = new AudioPlayer[text.length-1];
 
 
   for (int i = 0; i < files.length; i++) {
@@ -101,7 +134,7 @@ void setFFT(int i) {
   fft.linAverages(audioRange);
   fft.window(FFT.GAUSS);
   fft.forward(files[i].mix);
-  drawViz(50*(i+1));
+  drawViz(50+step*i);
 }
 
 void setMargin(int a) {
@@ -117,7 +150,7 @@ void setMargin(int a) {
 void draw()
 {
   int num  = text.length;
-  if (i<num-2) {
+  if (i<num-1) {
     if (!files[i].isPlaying()) {
       files[i=(i+1)].play();
       String[] words = getLine(i);
@@ -141,26 +174,26 @@ void draw()
   }
 }
 
-void drawViz(int y) {
+void drawViz(float y) {
   float maxtempIndxAvg =0;
   for (int i = 0; i < audioRange; i++)
   {
     //stroke(0);
     noStroke();
-    fill(255-(y*2), 255, 255, 25);
+    fill(genColor, 25);
     float tempIndxAvg = (fft.getAvg(i) * audioAmp) * audioIndexAmp;
     if (maxtempIndxAvg < tempIndxAvg)
       maxtempIndxAvg = tempIndxAvg;
-    rect(xStart + (i* xSpacing), y+(20*i), rectSize, tempIndxAvg);
+    rect(xStart + (i* xSpacing), y+((step/4)*i), rectSize, tempIndxAvg);
     //line(i, height, i, height - fft.getBand(i)*20);
     audioIndexAmp += audioIndexStep;
-    println(y);
+   // println(y);
   }
   maxLast = maxtempIndxAvg;
 }
 
 void stop() {
-  files[12].close();
+  files[text.length-1].close();
   minim.stop();
   super.stop();
 }
@@ -198,6 +231,15 @@ void keyPressed() {
     // noLoop();
     // drawVerses();
   }
+}
+
+void countHandStep(int wl){
+float th = map(wl-5, wl, wl+30, (height - 350),(height -150)); 
+println("TH" + th);
+step = (((height-th)+300)/(wl-1));
+println("STEP "+step);
+h=(th/(wl));
+
 }
 
 float countWLc(int wl) {
