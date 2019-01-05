@@ -112,10 +112,10 @@ void setup()
   // always start Minim first!
   minim = new Minim(this);
 
-  files = new AudioPlayer[text.length-1];
+  files = new AudioPlayer[text.length]; //<>//
 
 
-  for (int i = 0; i < files.length; i++) {
+  for (int i = 0; i < files.length; i++) { //<>//
     files[i] = minim.loadFile( "c" +(i+1) + ".wav");
   }
 
@@ -149,29 +149,17 @@ void setMargin(int a) {
 }
 void draw()
 {
-  int num  = text.length;
-  if (i<num-1) {
-    if (!files[i].isPlaying()) {
-      files[i=(i+1)].play();
+   if (!files[i].isPlaying())  {
+          files[i = (i + 1) % files.length].play(); //<>//
+ 
       String[] words = getLine(i);
       setMargin(words.length);
-    }
-
+    
+   }
     setFFT(i);
 
     audioIndexAmp = audioIndex;
-  } else {
-    if (!files[i-1].isPlaying()) {
-      files[i].play();
-      String[] words = getLine(i);
-      setMargin(words.length);
-    }
-
-    setFFT(i);
-
-    audioIndexAmp = audioIndex;
-    stop();
-  }
+ 
 }
 
 void drawViz(float y) {
@@ -193,7 +181,7 @@ void drawViz(float y) {
 }
 
 void stop() {
-  files[text.length-1].close();
+  //files[text.length-2].close();
   minim.stop();
   super.stop();
 }
@@ -236,7 +224,7 @@ void keyPressed() {
 void countHandStep(int wl){
 float th = map(wl-5, wl, wl+30, (height - 350),(height -150)); 
 println("TH" + th);
-step = (((height-th)+300)/(wl-1));
+step = (((height-th)+350)/(wl-1));
 println("STEP "+step);
 h=(th/(wl));
 
