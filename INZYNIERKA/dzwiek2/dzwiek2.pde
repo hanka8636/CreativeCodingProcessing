@@ -19,6 +19,7 @@ color col =0;
 Grid grid;
 int lang;
 
+//deklaracja bibliotek do odczytywania muzyki i z Szybka Transformata Fouriera (FFT) 
 Minim minim;
 AudioPlayer myAudio;
 FFT fft;
@@ -49,6 +50,7 @@ int stageWidth;
 float xStart = 100;
 float yStart;
 
+//maksymalna liczba slow w wersie, sluzaca do ustalenia marginesow dla tekstu
 int maxMargin; 
 
 //y - wysokosc na ktorej powinien sie zaczynac wers, xSpacing - odstepy miedzy zakresami w X

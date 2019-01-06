@@ -17,11 +17,13 @@ int score;
 IntDict totalPointsForLetter;
 color col =0;
 Grid grid;
+int lang;
+
 float prevX =0;
 float prevY = 0;
 
+//deklaracja bibliotek do odczytywania muzyki i z Szybka Transformata Fouriera (FFT)
 Minim minim;
-AudioPlayer myAudio;
 FFT fft;
 
 int i =0;
@@ -29,80 +31,182 @@ float maxLast = 0;
 
 AudioPlayer[] files;
 
+//wysokosc i krok, pozniej uzaleznione od liczby wersow w tekscie 
+float h = 0;
+float step = 0;
 
-int audioRange = 12;
+//liczba przedzialow i maksymalna moc dzwieku
+int audioRange = 5;
 int audioMax = 100;
 
+//domyslna wartosc amplitudy (pozniej uzalezniana od liczby wersow w tekscie),  indeks amplitudy i jej krok 
 float audioAmp = 40.0;
 float audioIndex = 0.2;
 float audioIndexAmp = audioIndex;
 float audioIndexStep = 0.35;
 
+//tablica na dane muzyki
 float[] audioData = new float[audioRange];
 
+//szerokosc pojedynczego spektrum amplitudy, margines, poczatkowe wartosci rysowania
 int rectSize = 50;
 int stageMargin;
 int stageWidth = (audioRange*rectSize) + (stageMargin*2);
 float xStart;
 float yStart;
 
+//maksymalna liczba slow w wersie, sluzaca do ustalenia marginesow dla tekstu
+int maxMargin; 
+
+//y - wysokosc na ktorej powinien sie zaczynac wers, xSpacing - odstepy miedzy zakresami w X
 float y = yStart;
 int xSpacing = rectSize;
 
+//domyslna wartosc koloru tla, pozniej definniowana w zaleznosci od jezyka oryginalu
 color bgColor = #333333;
+//zmienna na kolor rysowanej grafiki, pozniej definiowana w zaleznosci od tytulu i autora 
+color genColor;
+// zmienne na ciagi znakow bedace autorem, tytulem, mowca
+String author =null;
+String title = null;
+String speaker = null;
 
-void setup()
-{
-  file = "cialo.txt";
-  sad = new SplitAndDict(file);
-  sp = new ScrabblePoints("pl");
-  sad.setAll();
-  textLine = sad.getOneLiner();
-  sad.createLettersDict();
-  score = sp.countPoints(textLine);
-  //col = color(0,score*0.5,score*0.8);
-  stroke(0);
-  background(0, 0, col);
-  grid = new Grid("Pożegnanie", "Tadeusz Boy-Żelański", "Exo-Regular.ttf", "Exo-Thin.ttf");
-  text =sad.getText();
+//przypisanie wartosci autorowi, tytulowi i mowcy 
+void setAuthorTitleSpeaker() {
+  author = "Bolesław Leśmian";
+  title = " Jak niewiele ma znaków to ubogie ciało";
+  speaker = "kobieta, 22 lata, studentka";
+}
 
-  size(707, 1000);
-  stageMargin = (width - (rectSize * audioRange))/2;
-  if (stageMargin < 0) {
-    rectSize /= 1.75;
-    stageMargin = (width - (rectSize * audioRange))/2;
-    xSpacing = rectSize;
+//obliczenie i przypisanie wartosci koloru tla w zaleznosci od jezyka oryginalu
+void setBackgroundColorByLanguage(String l) {
+  for (int i =0; i<l.length(); i++) {
+    int ascii = l.charAt(i);
+    lang+=ascii;
   }
-
-  xStart = stageMargin;
-  yStart = 50;
+  bgColor =color(lang, 80, 50);
   background(bgColor);
-  // always start Minim first!
-  minim = new Minim(this);
+}
 
-  files = new AudioPlayer[13];
+//obliczenie i przypisanie wartosci koloru grafiki gdzie autor odpowiada za Hue (odcien), a tytul za Brightness (jasnosc)
+void setDrawingColorByAuthorAndTitle() {
+  float temp = 255-(3*author.length());
+  println("TEP" +temp);
+  genColor =color(255-(2*author.length()), 255, 255-(3*title.length()));
+}
 
+//pozniej do usuniecia
+void drawTestMargins() {
+  stroke(255);
+   line(0,50,width,50);
+  // line(0,height-50,width,height-50);
+  //  line(0,height-100,width,height-100);
+    line(0,height-150,width,height-150);
+ // textSize(12);
+  //text(author, 50, height-125);
+ // text(title, 50, height-75);
+ // text(speaker, width/2+50, height-50);
+  noStroke();
+}
+
+//wczytanie plikow dzwiekowych z wersami
+void loadFiles() {
+  files = new AudioPlayer[text.length];
 
   for (int i = 0; i < files.length; i++) {
     files[i] = minim.loadFile( "c" +(i+1) + ".wav");
   }
+}
 
+//podstawowe operacje by tekst byl przydatny
+void setAllConectedWithText() {
+  file = "cialo.txt";
+  sad = new SplitAndDict(file);
+  // sp = new ScrabblePoints("pl");
+  sad.setAll();
+  textLine = sad.getOneLiner();
+  sad.createLettersDict();
+  //score = sp.countPoints(textLine);
+  text =sad.getText();
+}
 
+void drawTexts(){
+  //drawTestMargins();
+  
+  
+  fill(255, 50);
+  textSize(12);
+  textAlign(RIGHT, BOTTOM);
+  text(title, width -maxX-50, height-100);
+  textSize(12);
+  text(author, width -maxX-50, height-80);
+  textAlign(LEFT, BOTTOM);
+  textSize(8);
+  text(speaker, maxX, height-100);
+
+}
+
+void setup()
+{
+    size(707, 1000);
+  colorMode(HSB);
+  setAllConectedWithText();
+
+  countHAmplitudeStep(text.length);
+  println(h);
+
+  setAuthorTitleSpeaker();
+
+  //obliczanie wartosci jezyka jako suma kodow ASCII
+  setBackgroundColorByLanguage("PL");
+  println("LANG"+lang);
+
+  setDrawingColorByAuthorAndTitle();
+  //col = color(0,score*0.5,score*0.8);
+  stroke(0);
+
+  grid = new Grid(title, author, "Exo-Regular.ttf", "Exo-Thin.ttf");
+drawTestMargins();
+countMaxMargin();
+maxX=xStart;
+drawTexts();
+
+  // always start Minim first!
+  minim = new Minim(this);
+
+  loadFiles();
+  //odtworzenie i wykonanie operacji na pierwszym pliku dzwiekowym
   files[0].play();
   String[] words = getLine(0);
   setMargin(words.length);
 
+  setFFTandDraw(0);
 
-
-  setFFT(0);
 }
 
-void setFFT(int i) {
+void draw()
+{
+  int num  = text.length;
+
+    if (!files[i].isPlaying()) {
+      files[i=(i+1) % files.length].play();
+      String[] words = getLine(i);
+      setMargin(words.length);
+    }
+
+    setFFTandDraw(i);
+drawTexts();
+    audioIndexAmp = audioIndex;
+  
+}
+
+void setFFTandDraw(int i) {
   fft = new FFT(files[i].bufferSize(), files[i].sampleRate());
   fft.linAverages(audioRange);
   fft.window(FFT.GAUSS);
   fft.forward(files[i].mix);
-  drawViz(50*(i+1));
+  drawViz(step*i+50);
+  
 }
 
 void setMargin(int a) {
@@ -115,57 +219,53 @@ void setMargin(int a) {
   }
   xStart = stageMargin;
 }
-void draw()
-{
-  int num  = text.length;
-  if (i<num-2) {
-    if (!files[i].isPlaying()) {
-      files[i=(i+1)].play();
-      String[] words = getLine(i);
-      setMargin(words.length);
-    }
-
-    setFFT(i);
-
-    audioIndexAmp = audioIndex;
-  } else {
-    if (!files[i-1].isPlaying()) {
-      files[i].play();
-      String[] words = getLine(i);
-      setMargin(words.length);
-    }
-
-    setFFT(i);
-
-    audioIndexAmp = audioIndex;
-    stop();
+void countMaxMargin() {
+  for (int i=0; i<text.length; i++) {
+    String[] words = getLine(i);
+    if (maxMargin< words.length)
+      maxMargin=words.length;
   }
+
+  setMargin(maxMargin);
 }
 
-void drawViz(int y) {
+void drawViz(float y) {
   float maxtempIndxAvg =0;
   for (int i = 0; i < audioRange; i++)
   {
-    stroke(255,5);
+   
    // noStroke();
    // fill(255-(y*2), 255, 255, 25);
     float tempIndxAvg = (fft.getAvg(i) * audioAmp) * audioIndexAmp;
     if (maxtempIndxAvg < tempIndxAvg)
       maxtempIndxAvg = tempIndxAvg;
      // rect(xStart + (i* xSpacing), y, rectSize, tempIndxAvg);
-      stroke(255,0,0,100);
+       stroke(genColor,25);
       line(xStart + (i* xSpacing), y, xStart + (i* xSpacing)+rectSize, tempIndxAvg+y);
       line(prevX, prevY, xStart + (i* xSpacing), y+(tempIndxAvg));
    // line(prevX, prevY, xStart + (i* xSpacing), y+(tempIndxAvg));
-    line((i+1)*20, prevY, (i+2)*40, prevY + fft.getBand(i)*20);
+  //  line((i+1)*20, prevY, (i+2)*40, prevY + fft.getBand(i)*20);
     audioIndexAmp += audioIndexStep;
    // prevX +=xStart + ((i+20)* xSpacing);
    prevX =xStart + (i* xSpacing);
     prevY += y+(tempIndxAvg);
     
+    noStroke();
+    fill(bgColor);
+    rect(0,height-150, width,height);
+    
     println(y);
  }
   maxLast = maxtempIndxAvg;
+}
+//liczenie wysokosci slupka, amplitudy i kroku miedzy wersami
+void countHAmplitudeStep(int wl) {
+  float th = map(wl-5, wl, wl+30, (height - 350), (height -150)); 
+  println("TH" + th);
+  step = (((height-th)+380)/(wl-1));
+  println("STEP "+step);
+  h=(th/(wl));
+  audioAmp = h;
 }
 
 void stop() {
