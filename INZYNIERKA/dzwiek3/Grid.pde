@@ -3,13 +3,16 @@
 class Grid {
   PFont pFont1;
   PFont pFont2;
-
+float letterWidths;
+float letterWidth;
   String[] titleSplit;  
   String title;
   int titleSize;
   String author;
   //PFont font
   //Konstruktor tylko z tytułem
+  
+  float startDrawingPosition;
   Grid(String title) {
     this.title = title;
   }
@@ -54,6 +57,14 @@ class Grid {
     textFont(pFont2);
     textSize(40);
     text(author, xa, ya);
+  }
+  
+   void countLetterWidth(int longest) {
+   letterWidths =width-100;
+   letterWidth = letterWidths/longest; //to daje nam budulec do każdego słowa - wartość jednej literki to letterWidth 
+   letterWidth=letterWidths/2;
+ //  startDrawingPosition = 
+  
   }
 
 

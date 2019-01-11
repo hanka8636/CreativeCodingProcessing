@@ -29,7 +29,7 @@ float maxLast = 0;
 AudioPlayer[] files;
 int[] nums = {7,6,9,5,4,12,7,5,8,10,4,7,9,6};
 
-int audioRange = 12;
+int audioRange = 4;
 int audioMax = 100;
 
 float audioAmp = 40.0;
@@ -41,7 +41,7 @@ int rectSize = 50;
 int stageMargin;
 int stageWidth = (audioRange*rectSize) + (stageMargin*2);
 float xStart;
-float yStart;
+float yStart =50;
 
 float y = yStart;
 int xSpacing = rectSize;
@@ -170,10 +170,13 @@ void drawViz(){
       float tempIndxAvg = (fft.getAvg(i) * audioAmp) * audioIndexAmp;
       if (maxtempIndxAvg < tempIndxAvg)
       maxtempIndxAvg = tempIndxAvg;
-      rect(xStart + (i* xSpacing), y, rectSize, tempIndxAvg);
+    if (i%2==0)  
+      rect(xStart + (noise(40)*i* xSpacing), y, rectSize, tempIndxAvg);
+      else
+      rect(width-(xStart + (noise(40)*i* xSpacing)), y, rectSize, tempIndxAvg);
     //line(i, height, i, height - fft.getBand(i)*20);
     audioIndexAmp += audioIndexStep;
-    println(y);
+    println(tempIndxAvg);
   }
   maxLast = maxtempIndxAvg; //<>//
 }
@@ -187,8 +190,8 @@ super.stop();
 
 void countDistY(){
  y += maxLast;  //<>//
- if (y>height)
- y =0;
+ if (y>height-150)
+ y =50;
 
 }
 

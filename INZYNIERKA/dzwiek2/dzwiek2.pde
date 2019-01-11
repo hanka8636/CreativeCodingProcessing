@@ -2,11 +2,7 @@ import ddf.minim.*;  //<>// //<>// //<>// //<>// //<>//
 import ddf.minim.analysis.*;
 
 //połączenia tego samego słowa w kolejnych wersach
-float maxX = 0;
-float lastYb =0;
-float lastYe =0;
-float aplph =0;
-float unit =0;
+
 int a = 0;
 String[] text;
 String textLine;
@@ -92,14 +88,15 @@ void setDrawingColorByAuthorAndTitle() {
 //pozniej do usuniecia
 void drawTestMargins() {
   stroke(255);
-  // line(0,50,width,50);
-  // line(0,height-50,width,height-50);
-  //  line(0,height-100,width,height-100);
-  //  line(0,height-150,width,height-150);
+   line(0,50,width,50);
+    line(0,height-50,width,height-50);
+    line(0,height-100,width,height-100);
+    line(0,height-150,width,height-150);
+    
   textSize(12);
-  text(author, 50, height-125);
-  text(title, 50, height-75);
-  text(speaker, width/2+50, height-50);
+ // text(author, 50, height-125);
+ // text(title, 50, height-75);
+ // text(speaker, width/2+50, height-50);
   noStroke();
 }
 
@@ -125,7 +122,7 @@ void setAllConectedWithText() {
 }
 
 void drawTexts(){
-  //drawTestMargins();
+  drawTestMargins();
   countMaxMargin();
   
   fill(255, 50);
@@ -173,7 +170,7 @@ drawTexts();
   String[] words = getLine(0);
   setMargin(words.length);
 
-  setFFTandDraw(0);
+ // setFFTandDraw(0);
 }
 
 void draw()
