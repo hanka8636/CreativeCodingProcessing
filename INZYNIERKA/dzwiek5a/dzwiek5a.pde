@@ -137,9 +137,9 @@ void drawTexts(){
   fill(255, 50);
   textSize(12);
   textAlign(RIGHT, BOTTOM);
-  text(title, width -maxX-50, height-100);
+  text(title, width -maxX, height-100);
   textSize(12);
-  text(author, width -maxX-50, height-80);
+  text(author, width -maxX, height-80);
   textAlign(LEFT, BOTTOM);
   textSize(8);
   text(speaker, maxX, height-100);
@@ -148,6 +148,7 @@ void drawTexts(){
 
 void setup()
 {
+  frameRate(5);
     size(707, 1000);
   colorMode(HSB);
   setAllConectedWithText();
@@ -186,6 +187,7 @@ drawTexts();
 
 void draw()
 {
+  //background(bgColor);
   int num  = text.length;
 
     if (!files[i].isPlaying()) {
@@ -193,9 +195,9 @@ void draw()
       String[] words = getLine(i);
       setMargin(words.length);
     }
-
+//drawTestMargins();
     setFFTandDraw(i);
-drawTexts();
+//drawTexts();
     audioIndexAmp = audioIndex;
   
 }
@@ -205,7 +207,7 @@ void setFFTandDraw(int i) {
   fft.linAverages(audioRange);
   fft.window(FFT.GAUSS);
   fft.forward(files[i].mix);
-  drawViz(step*i+50);
+  drawViz((step)*i+75);
   
 }
 
@@ -229,18 +231,31 @@ void countMaxMargin() {
   setMargin(maxMargin);
 }
 
-void drawViz(float y) {
-  float maxtempIndxAvg =0;
-  for (int i = 0; i < audioRange; i++)
+float[] calcTempAvg(){
+  float tempIndxAvg[] = new float[audioRange];
+ for (int i = 0; i < audioRange; i++)
   {
    
    // noStroke();
    // fill(255-(y*2), 255, 255, 25);
-    float tempIndxAvg = (fft.getAvg(i) * audioAmp) * audioIndexAmp;
-    if (maxtempIndxAvg < tempIndxAvg)
-      maxtempIndxAvg = tempIndxAvg;
+     tempIndxAvg[i] = (fft.getAvg(i) * audioAmp) * audioIndexAmp;}
+     return tempIndxAvg;
+}
+
+
+void drawViz(float y) {
+  float[] tempIndxAvg =calcTempAvg();
+  for (int i = 0; i < audioRange; i++)
+  {
+    
+    float temp = tempIndxAvg[(int)random(audioRange-1)];
+   println("TEMP "+temp); //<>// //<>//
+   // noStroke();
+   // fill(255-(y*2), 255, 255, 25);
+   // if (maxtempIndxAvg < tempIndxAvg)
+     // maxtempIndxAvg = tempIndxAvg;
      // rect(xStart + (i* xSpacing), y, rectSize, tempIndxAvg);
-       stroke(genColor,25);
+       stroke(genColor, 25+temp*20);
      // line(xStart + (i* xSpacing), y, xStart + (i* xSpacing)+rectSize, tempIndxAvg+y);
      // line(prevX, prevY, xStart + (i* xSpacing), y+(tempIndxAvg));
       
@@ -250,31 +265,32 @@ translate(xStart + (i* xSpacing)+rectSize/2,y);// bring zero point to the center
 
 //stroke(0);
 noFill();
- ran =random(step-15,step+5);
-line(0,0, sin(tempIndxAvg+rectSize)*ran,cos(tempIndxAvg+rectSize)*ran);
-ellipse (sin(tempIndxAvg+rectSize)*ran,cos(tempIndxAvg+rectSize)*ran,5,5);
-println(ran);
+ ran =random((step)-15,(step)+5);
+// println("temp+rectSize"+(rectSize+(temp)*ran));
+line(0,0, sin(radians(rectSize+(temp)*ran))*ran,cos(radians(rectSize+(temp)*ran))*ran); //<>//
+ellipse (sin(radians(rectSize+(temp)*ran))*ran,cos(radians(rectSize+(temp)*ran))*ran,5,5); //<>//
+//println("SIn"+sin(radians(rectSize+(temp)*ran)));
 popMatrix();      
    // line(prevX, prevY, xStart + (i* xSpacing), y+(tempIndxAvg));
   //  line((i+1)*20, prevY, (i+2)*40, prevY + fft.getBand(i)*20);
     audioIndexAmp += audioIndexStep;
    // prevX +=xStart + ((i+20)* xSpacing);
    prevX =xStart + (i* xSpacing);
-    prevY += y+(tempIndxAvg);
+    prevY += y+(temp);
     
     noStroke();
-    fill(bgColor);
-    rect(0,height-150, width,height);
+   // fill(bgColor);
+  //  rect(0,height-150, width,height);
     noFill();
     println(y);
  }
-  maxLast = maxtempIndxAvg;
+ // maxLast = maxtempIndxAvg;
 }
 //liczenie wysokosci slupka, amplitudy i kroku miedzy wersami
 void countHAmplitudeStep(int wl) {
   float th = map(wl-5, wl, wl+30, (height - 350), (height -150)); 
   println("TH" + th);
-  step = (((height-th)+380)/(wl-1));
+  step = (((height-th)+350)/(wl-1));
   println("STEP "+step);
   h=(th/(wl));
   audioAmp = h;
@@ -319,42 +335,6 @@ void keyPressed() {
     // noLoop();
     // drawVerses();
   }
-}
-
-float countWLc(int wl) {
-  float calc = 0;
-  if (wl<10) {
-    calc =( 10 - wl);
-  }
-  if ((wl>=10)&&(wl<20)) {
-    calc = (20 - wl) *1.2;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=20)&&(wl<30)) {
-    calc = (30 - wl) *0.5;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=30)&&(wl<40)) {
-    calc = (40 - wl) *1.5;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=40)&&(wl<50)) {
-    calc = (50 - wl) *0.35;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=50)&&(wl<60)) {
-    calc = (60 - wl) *0.3;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=60)&&(wl<70)) {
-    calc = (70 - wl) *0.65;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=70)&&(wl<80)) {
-    calc = (80 - wl) *0.4;
-    // calc = 50*(1/(wl - 8));
-  }
-  return calc;
 }
 
 
