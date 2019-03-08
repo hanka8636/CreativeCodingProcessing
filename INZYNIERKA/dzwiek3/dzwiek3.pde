@@ -73,25 +73,41 @@ String speaker = null;
 float maxW = 0; 
 //przypisanie wartosci autorowi, tytulowi i mowcy 
 void setAuthorTitleSpeaker() {
-  author = "Bolesław Leśmian";
-  title = " Jak niewiele ma znaków to ubogie ciało";
-  speaker = "kobieta, 22 lata, studentka";
+  author = "Luciano Folgore";
+  title = "Torrefazione";
+  speaker = "mężczyzna, 22 lata, student";
 }
 
 //obliczenie i przypisanie wartosci koloru tla w zaleznosci od jezyka oryginalu
 void setBackgroundColorByLanguage(String l) {
-  for (int i =0; i<l.length(); i++) {
-    int ascii = l.charAt(i);
-    lang+=ascii;
-  }
-  background(lang, 80, 50);
+ int lastAscii = l.charAt(0);
+    for (int i =0; i<l.length(); i++) {
+      int ascii = l.charAt(i);
+      if (i!=0)
+        lastAscii -=ascii;
+      lang+=ascii;
+    }
+    lang+=3*lastAscii;
+    background(315-abs(lang), 80, 50);
 }
 
 //obliczenie i przypisanie wartosci koloru grafiki gdzie autor odpowiada za Hue (odcien), a tytul za Brightness (jasnosc)
 void setDrawingColorByAuthorAndTitle() {
-  float temp = 255-(3*author.length());
-  println("TEP" +temp);
-  genColor =color(255-(2*author.length()), 255, 255-(3*title.length()));
+  String[] nameSurname = sad.splitThisText(author);
+    int asciiN=0, asciiS=0;
+    for (int i =0; i<nameSurname.length; i++) {
+      for (int j =0; j<nameSurname[i].length(); j++) {
+        if (i%2==0)
+          asciiN += nameSurname[i].charAt(j);
+        else
+          asciiS += nameSurname[i].charAt(j);
+      }
+    }
+    String[] titleWords = sad.splitThisText(title);
+    int titleNum = titleWords.length;
+    genColor =color(author.length()+abs(asciiS-asciiN)/
+    (author.length()-nameSurname[0].length()), 
+      255, 255-(titleNum*title.length()));
 }
 
 //pozniej do usuniecia
@@ -113,13 +129,13 @@ void loadFiles() {
   files = new AudioPlayer[text.length];
 
   for (int i = 0; i < files.length; i++) {
-    files[i] = minim.loadFile( "c" +(i+1) + ".wav");
+    files[i] = minim.loadFile( "22it_" +(i+1) + ".wav");
   }
 }
 
 //podstawowe operacje by tekst byl przydatny
 void setAllConectedWithText() {
-  file = "cialo.txt";
+  file = "smazenieIT.txt";
   sad = new SplitAndDict(file);
   // sp = new ScrabblePoints("pl");
   sad.setAll();
@@ -132,8 +148,9 @@ void setAllConectedWithText() {
 void drawTexts(){
   //drawTestMargins();
   countMaxMargin();
-  
-  fill(255, 50);
+  PFont pFont1 = createFont("Barlow-Thin.ttf", 12);
+    textFont(pFont1);
+  fill(255);
   textSize(12);
   textAlign(RIGHT, BOTTOM);
   text(title, width -50, height-100);
@@ -142,6 +159,7 @@ void drawTexts(){
   textAlign(LEFT, BOTTOM);
   textSize(8);
   text(speaker, 50, height-100);
+  noFill();
 
 }
 
@@ -157,7 +175,7 @@ void setup()
   setAuthorTitleSpeaker();
 
   //obliczanie wartosci jezyka jako suma kodow ASCII
-  setBackgroundColorByLanguage("PL");
+  setBackgroundColorByLanguage("IT");
   println("LANG"+lang);
 
   setDrawingColorByAuthorAndTitle();
@@ -165,7 +183,7 @@ void setup()
   stroke(0);
 
   grid = new Grid(title, author, "Exo-Regular.ttf", "Exo-Thin.ttf");
-drawTestMargins();
+//drawTestMargins();
 
 ;
 countLetterWidth(sad.getLengthOfTheLongestWords());
@@ -182,6 +200,7 @@ drawTexts();
     for(int j=0; j<words.length; j++){
 
    sum+=words[j].length();
+       
     
     }
     
@@ -189,6 +208,7 @@ drawTexts();
   setMargin(sum);
 
   setFFTandDraw(0);
+  audioDataUpdate();
 //drawViz(65+step*(i), words.length);
 }
 
@@ -205,11 +225,11 @@ void draw()
       setMargin(words.length);
     }
     String[] words = getLine(i);
-     //  drawOnlyTextPicture(words);
+     //  drawOnlyTextPicture(words); //<>//
 
     setFFTandDraw(i); //<>//
     audioDataUpdate();
-    drawViz(words); //<>//
+    drawViz(words);
 
     audioIndexAmp = audioIndex;
    
@@ -295,23 +315,23 @@ void countLetterWidth(int longest) {
 void drawViz(String[] wordsInLine) {
  countMargin(wordsInLine);
   float prevX=xStart;
-  
+  setDrawingColorByAuthorAndTitle();
 noFill();
       strokeWeight(3);
       int fftAlpha = 0;
-    
+   
      
 for (int q=0; q<wordsInLine.length; q++) {
   int sum =0;
   int audRan = (int)random(audioData.length-1);
-  audioDataUpdate();
+ // audioDataUpdate();
   fftAlpha=(int)audioData[audRan]*10; //<>//
-  stroke(genColor-5*i,fftAlpha); 
+  stroke(genColor,fftAlpha/10); 
     float sf = wordsInLine[q].length()*letterWidth;
     sum+=wordsInLine[q].length();
-ellipseMode(CORNER); 
-float ran =0;//random(25);
-ellipse(prevX+ran,50+(i*step), sf-ran, step);
+//ellipseMode(CORNER); 
+float ran =random(25);
+rect(prevX+ran,50+(i*step), sf-ran, step- ran);
 prevX+=wordsInLine[q].length()*letterWidth;
 }
 
@@ -328,9 +348,9 @@ prevX+=wordsInLine[q].length()*letterWidth;
   }
 
 float defineBrickLength(int word){
-  float brickLength = map(word, 1, 30, 10, maxW*50);
+  float brickLength = map(word, 1, 30, 10, maxW*50); //<>//
   return brickLength;
-  } //<>//
+  }
 
 void audioDataUpdate(){
   
@@ -345,9 +365,9 @@ audioIndexAmp = audioIndex;
 
 //liczenie wysokosci slupka, amplitudy i kroku miedzy wersami
 void countHAmplitudeStep(int wl) {
-  float th = map(wl-5, wl, wl+3, (height - 350), (height -150)); 
+  float th = map(wl-5, wl, wl+3, (height - 350), (height -150 )); 
   println("TH" + th);
-  step = (((height-th)+50)/(wl-1));
+  step = (((height-th)+25)/(wl-1));
   println("STEP "+step);
   h=(th/(wl));
   audioAmp = h;
@@ -365,22 +385,6 @@ void countDistY() {
     y =0;
 }
 
-
-//Metoda liczy ile w tekście jest punktów za daną literę
-void countTotalPointsForLetters() {
-  IntDict sadD = sad.getDictLeters();
-  totalPointsForLetter=sp.getDict();
-  String[] as = sp.getKeys();
-  for (int i=0; i<totalPointsForLetter.size(); i++) {
-    String letter = as[i];
-    if (sadD.hasKey(letter) == true)
-    {
-      totalPointsForLetter.set(letter, totalPointsForLetter.get(letter)*sadD.get(letter));
-    }
-    //  println(totalPointsForLetter);
-  }
-}
-
 void keyPressed() {
   if (key == ' ') {
     a++;
@@ -392,42 +396,6 @@ void keyPressed() {
     // noLoop();
     // drawVerses();
   }
-}
-
-float countWLc(int wl) {
-  float calc = 0;
-  if (wl<10) {
-    calc =( 10 - wl);
-  }
-  if ((wl>=10)&&(wl<20)) {
-    calc = (20 - wl) *1.2;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=20)&&(wl<30)) {
-    calc = (30 - wl) *0.5;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=30)&&(wl<40)) {
-    calc = (40 - wl) *1.5;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=40)&&(wl<50)) {
-    calc = (50 - wl) *0.35;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=50)&&(wl<60)) {
-    calc = (60 - wl) *0.3;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=60)&&(wl<70)) {
-    calc = (70 - wl) *0.65;
-    // calc = 50*(1/(wl - 8));
-  }
-  if ((wl>=70)&&(wl<80)) {
-    calc = (80 - wl) *0.4;
-    // calc = 50*(1/(wl - 8));
-  }
-  return calc;
 }
 
 

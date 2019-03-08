@@ -8,15 +8,20 @@ class Grid {
   String title;
   int titleSize;
   String author;
+  String speaker;
+  
+  //maksymalna liczba slow w wersie, sluzaca do ustalenia marginesow dla tekstu
+int maxMargin; 
   //PFont font
   //Konstruktor tylko z tytułem
   Grid(String title) {
     this.title = title;
   }
 
-  Grid(String title, String author) {
+  Grid(String title, String author, String speaker) {
     this.title = title;
     this.author = author;
+    this.speaker = speaker;
   }
 
   Grid(String title, String author, String font1, String font2) {
@@ -26,6 +31,32 @@ class Grid {
     pFont1 = createFont(font1, 64);
     pFont2 = createFont(font2, 24);
   }
+  
+  void countMaxMargin(String[] text) {
+  for (int i=0; i<text.length; i++) {
+    String[] words = getLine(i);
+    if (maxMargin< words.length)
+      maxMargin=words.length;
+  }
+
+  setMargin(maxMargin);
+}
+  
+  void drawTexts(){
+  drawTestMargins();
+
+  
+  fill(255, 50);
+  textSize(12);
+  textAlign(RIGHT, BOTTOM);
+  text(title, width -xStart, height-100);
+  textSize(12);
+  text(author, width -xStart, height-80);
+  textAlign(LEFT, BOTTOM);
+  textSize(8);
+  text(speaker, xStart, height-100);
+
+}
 
   void drawDistortedTitle(float a) {
     textFont(pFont1);

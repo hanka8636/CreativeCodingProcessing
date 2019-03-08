@@ -3,9 +3,9 @@ import ddf.minim.analysis.*;
 
 //połączenia tego samego słowa w kolejnych wersach
 
-int a = 0;
-String[] text;
-String textLine;
+//int a = 0;
+//String[] text;
+//String textLine;
 SplitAndDict sad;
 ScrabblePoints sp;
 String file;
@@ -40,14 +40,13 @@ float audioIndexAmp = audioIndex;
 float audioIndexStep = 0.35;
 
 //szerokosc pojedynczego spektrum amplitudy, margines, poczatkowe wartosci rysowania
-int rectSize = 50;
+int rectSize = (int)random(45,55);
 int stageMargin;
 int stageWidth;
 float xStart = 100;
 float yStart;
 
-//maksymalna liczba slow w wersie, sluzaca do ustalenia marginesow dla tekstu
-int maxMargin; 
+
 
 //y - wysokosc na ktorej powinien sie zaczynac wers, xSpacing - odstepy miedzy zakresami w X
 float y = yStart;
@@ -102,7 +101,7 @@ void drawTestMargins() {
 
 //wczytanie plikow dzwiekowych z wersami
 void loadFiles() {
-  files = new AudioPlayer[text.length];
+  files = new AudioPlayer[sad.text.length];
 
   for (int i = 0; i < files.length; i++) {
     files[i] = minim.loadFile( "c" +(i+1) + ".wav");
@@ -115,27 +114,13 @@ void setAllConectedWithText() {
   sad = new SplitAndDict(file);
   // sp = new ScrabblePoints("pl");
   sad.setAll();
-  textLine = sad.getOneLiner();
+  sad.textOneLine = sad.getOneLiner();
   sad.createLettersDict();
   //score = sp.countPoints(textLine);
-  text =sad.getText();
+  sad.text =sad.getText();
 }
 
-void drawTexts(){
-  drawTestMargins();
-  countMaxMargin();
-  
-  fill(255, 50);
-  textSize(12);
-  textAlign(RIGHT, BOTTOM);
-  text(title, width -xStart, height-100);
-  textSize(12);
-  text(author, width -xStart, height-80);
-  textAlign(LEFT, BOTTOM);
-  textSize(8);
-  text(speaker, xStart, height-100);
 
-}
 
 void setup()
 {
@@ -144,7 +129,7 @@ void setup()
 
   setAllConectedWithText();
 
-  countHAmplitudeStep(text.length);
+  countHAmplitudeStep(sad.text.length);
   println(h);
 
   setAuthorTitleSpeaker();
@@ -157,9 +142,9 @@ void setup()
   //col = color(0,score*0.5,score*0.8);
   stroke(0);
 
-  grid = new Grid(title, author, "Exo-Regular.ttf", "Exo-Thin.ttf");
-
-drawTexts();
+  grid = new Grid(title, author, speaker);
+grid.countMaxMargin(sad.text);
+grid.drawTexts();
 
   // always start Minim first!
   minim = new Minim(this);
@@ -209,15 +194,6 @@ void setMargin(int a) {
   xStart = stageMargin;
 }
 
-void countMaxMargin() {
-  for (int i=0; i<text.length; i++) {
-    String[] words = getLine(i);
-    if (maxMargin< words.length)
-      maxMargin=words.length;
-  }
-
-  setMargin(maxMargin);
-}
 
 //rysowanie grafik wersa
 void drawViz(float y) {
@@ -246,7 +222,7 @@ void countHAmplitudeStep(int wl) {
   h=(th/(wl));
   audioAmp = h;
 }
-
+/*
 //Metoda liczy ile w tekście jest punktów za daną literę
 void countTotalPointsForLetters() {
   IntDict sadD = sad.getDictLeters();
@@ -261,10 +237,10 @@ void countTotalPointsForLetters() {
     //  println(totalPointsForLetter);
   }
 }
-
+*/
 //zakonczenie odtwarzania
 void stop() {
-  files[text.length].close();
+  files[sad.text.length].close();
   minim.stop();
   super.stop();
 }
@@ -272,7 +248,7 @@ void stop() {
 
 void keyPressed() {
   if (key == ' ') {
-    a++;
+   // a++;
     println("SPACJA");
     // grid.drawDistortedTitle(maxX);
     // grid.drawInBlankSpace(lastYb, lastYe, aplph);
@@ -291,7 +267,7 @@ void mousePressed() {
 }
 
 String[] getLine(int i) {
-  String[] words = splitTokens(text[i], " ,.!:-?");
+  String[] words = splitTokens(sad.text[i], " ,.!:-?");
 
   return words;
 }

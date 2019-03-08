@@ -49,7 +49,7 @@ float audioIndexStep = 0.35;
 float[] audioData = new float[audioRange];
 
 //szerokosc pojedynczego spektrum amplitudy, margines, poczatkowe wartosci rysowania
-int rectSize = 50;
+int rectSize = 80;
 int stageMargin;
 int stageWidth = (audioRange*rectSize) + (stageMargin*2);
 float xStart;
@@ -73,26 +73,41 @@ String speaker = null;
 
 //przypisanie wartosci autorowi, tytulowi i mowcy 
 void setAuthorTitleSpeaker() {
-  author = "Bolesław Leśmian";
-  title = " Jak niewiele ma znaków to ubogie ciało";
-  speaker = "kobieta, 22 lata, studentka";
+    author = "Luciano Folgore";
+    title = "Torrefazione";
+    speaker = "mężczyzna, 22 lata, student";
 }
 
 //obliczenie i przypisanie wartosci koloru tla w zaleznosci od jezyka oryginalu
-void setBackgroundColorByLanguage(String l) {
-  for (int i =0; i<l.length(); i++) {
-    int ascii = l.charAt(i);
-    lang+=ascii;
+ void setBackgroundColorByLanguage(String l) {
+    int lastAscii = l.charAt(0);
+    for (int i =0; i<l.length(); i++) {
+      int ascii = l.charAt(i);
+      if (i!=0)
+        lastAscii -=ascii;
+      lang+=ascii;
+    }
+    lang+=3*lastAscii;
+    background(315-abs(lang), 80, 50);
   }
-  bgColor =color(lang, 80, 50);
-  background(bgColor);
-}
 
 //obliczenie i przypisanie wartosci koloru grafiki gdzie autor odpowiada za Hue (odcien), a tytul za Brightness (jasnosc)
 void setDrawingColorByAuthorAndTitle() {
-  float temp = 255-(3*author.length());
-  println("TEP" +temp);
-  genColor =color(255-(2*author.length()), 255, 255-(3*title.length()));
+String[] nameSurname = sad.splitThisText(author);
+    int asciiN=0, asciiS=0;
+    for (int i =0; i<nameSurname.length; i++) {
+      for (int j =0; j<nameSurname[i].length(); j++) {
+        if (i%2==0)
+          asciiN += nameSurname[i].charAt(j);
+        else
+          asciiS += nameSurname[i].charAt(j);
+      }
+    }
+    String[] titleWords = sad.splitThisText(title);
+    int titleNum = titleWords.length;
+    genColor =color(author.length()+abs(asciiS-asciiN)/
+    (author.length()-nameSurname[0].length()), 
+      255, 255-(titleNum*title.length()));
 }
 
 //pozniej do usuniecia
@@ -114,13 +129,13 @@ void loadFiles() {
   files = new AudioPlayer[text.length];
 
   for (int i = 0; i < files.length; i++) {
-    files[i] = minim.loadFile( "c" +(i+1) + ".wav");
+    files[i] = minim.loadFile( "22it_" +(i+1) + ".wav");
   }
 }
 
 //podstawowe operacje by tekst byl przydatny
 void setAllConectedWithText() {
-  file = "cialo.txt";
+  file = "smazenieIT.txt";
   sad = new SplitAndDict(file);
   // sp = new ScrabblePoints("pl");
   sad.setAll();
@@ -132,9 +147,10 @@ void setAllConectedWithText() {
 
 void drawTexts(){
   //drawTestMargins();
+  PFont pFont1 = createFont("Barlow-Thin.ttf", 12);
   
-  
-  fill(255, 50);
+  fill(255);
+  textFont(pFont1);
   textSize(12);
   textAlign(RIGHT, BOTTOM);
   text(title, width -maxX, height-100);
@@ -159,7 +175,7 @@ void setup()
   setAuthorTitleSpeaker();
 
   //obliczanie wartosci jezyka jako suma kodow ASCII
-  setBackgroundColorByLanguage("PL");
+  setBackgroundColorByLanguage("IT");
   println("LANG"+lang);
 
   setDrawingColorByAuthorAndTitle();
@@ -207,7 +223,7 @@ void setFFTandDraw(int i) {
   fft.linAverages(audioRange);
   fft.window(FFT.GAUSS);
   fft.forward(files[i].mix);
-  drawViz((step)*i+75);
+  drawViz((step)*i+100);
   
 }
 
@@ -250,14 +266,10 @@ void drawViz(float y) {
     
     float temp = tempIndxAvg[(int)random(audioRange-1)];
    println("TEMP "+temp); //<>// //<>//
-   // noStroke();
-   // fill(255-(y*2), 255, 255, 25);
-   // if (maxtempIndxAvg < tempIndxAvg)
-     // maxtempIndxAvg = tempIndxAvg;
-     // rect(xStart + (i* xSpacing), y, rectSize, tempIndxAvg);
-       stroke(genColor, 25+temp*20);
-     // line(xStart + (i* xSpacing), y, xStart + (i* xSpacing)+rectSize, tempIndxAvg+y);
-     // line(prevX, prevY, xStart + (i* xSpacing), y+(tempIndxAvg));
+
+       strokeWeight(2);
+       stroke(genColor, 60+temp*3);
+
       
       float ran =random(50,25);
 pushMatrix();
@@ -266,31 +278,29 @@ translate(xStart + (i* xSpacing)+rectSize/2,y);// bring zero point to the center
 //stroke(0);
 noFill();
  ran =random((step)-15,(step)+5);
-// println("temp+rectSize"+(rectSize+(temp)*ran));
+
 line(0,0, sin(radians(rectSize+(temp)*ran))*ran,cos(radians(rectSize+(temp)*ran))*ran); //<>//
 ellipse (sin(radians(rectSize+(temp)*ran))*ran,cos(radians(rectSize+(temp)*ran))*ran,5,5); //<>//
-//println("SIn"+sin(radians(rectSize+(temp)*ran)));
+
 popMatrix();      
-   // line(prevX, prevY, xStart + (i* xSpacing), y+(tempIndxAvg));
-  //  line((i+1)*20, prevY, (i+2)*40, prevY + fft.getBand(i)*20);
+
     audioIndexAmp += audioIndexStep;
    // prevX +=xStart + ((i+20)* xSpacing);
    prevX =xStart + (i* xSpacing);
     prevY += y+(temp);
     
     noStroke();
-   // fill(bgColor);
-  //  rect(0,height-150, width,height);
+
     noFill();
     println(y);
  }
- // maxLast = maxtempIndxAvg;
+
 }
 //liczenie wysokosci slupka, amplitudy i kroku miedzy wersami
 void countHAmplitudeStep(int wl) {
   float th = map(wl-5, wl, wl+30, (height - 350), (height -150)); 
   println("TH" + th);
-  step = (((height-th)+350)/(wl-1));
+  step = (((height-th)+320)/(wl-1));
   println("STEP "+step);
   h=(th/(wl));
   audioAmp = h;
@@ -338,12 +348,7 @@ void keyPressed() {
 }
 
 
-void mousePressed() {
-  if (mouseButton == LEFT)
-    grid.drawTitleM();
-  if (mouseButton == RIGHT)
-    grid.drawAuthorM();
-}
+
 
 String[] getLine(int i) {
   String[] words = splitTokens(text[i], " ,.!:-?");
