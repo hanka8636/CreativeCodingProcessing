@@ -1,11 +1,10 @@
-
 PImage img;
 int smallPoint, largePoint;
 int angle = 0;
 
 void setup() {
-  size(1024, 768);
-  img = loadImage("1024x768.jpg");
+  size(1280, 720);
+  img = loadImage("maxresdefault.jpg");
   smallPoint = 4;
   largePoint = 40;
   imageMode(CENTER);
@@ -24,7 +23,6 @@ void draw() {
 
     angle += 5;
     val = cos(radians(angle)) * 30.0;
-    // float pointillize = map(mouseX, 0, width, smallPoint, largePoint);
     pointillize = random(smallPoint, largePoint);
     x = mouseX;
     println("mousex" +x);
@@ -33,27 +31,12 @@ void draw() {
     fill(pix, 128);
     ellipse(x, y, pointillize, pointillize);
 
-    for (int a = 0; a < 360; a += 75) {
-      float xoff = cos(radians(a)) * val;
-      float yoff = sin(radians(a)) * val;
+    for (int a = 0; a < 100; a++)  {
+      float xoff = random(a) * val;
+      float yoff = random(a) * val;
       pix = img.get(mouseX+(int)xoff, mouseY+(int)yoff);
       fill(pix, 128);
       rect(mouseX + xoff, mouseY + yoff, val, val);
-    }
-  }
-
-  for (int i = 50; i <= 250; i +=50) {
-    x = mouseX+i;
-    y = mouseY-i;
-    pix = img.get(x, mouseY);
-    fill(pix, 128);
-    ellipse(x, y, pointillize, pointillize);
-    for (int a = 0; a < 360; a += 75) {
-      float xoff = cos(radians(a)) * val;
-      float yoff = sin(radians(a)) * val;
-      pix = img.get(x+(int)xoff, y+(int)yoff);
-      fill(pix, 128);
-      rect(x+ xoff, y + yoff, val, val);
     }
   }
 }

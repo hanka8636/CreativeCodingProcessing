@@ -6,7 +6,7 @@ class Particle {
   float alpha;
 
   Particle() {
-    
+
     x = mouseX;
     y = mouseY;
     vx =  random(-1, 1);

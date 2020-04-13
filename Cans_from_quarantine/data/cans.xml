@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<cans>
+<can id="1">
+    <name>Fasola maślana biała w słonej zalewie</name>
+    <brand>giana</brand>
+    <width unit="mm">75</width>
+    <height unit="mm">105</height>
+
+    <weight unit ="g">400</weight>
+    <weight_product unit = "g">240</weight_product>
+
+    <energy unit="kJ">429</energy>
+    <kcal>102</kcal>
+
+    <bar_code>8595241511290</bar_code>
+    <expiration_date>
+        <day>30</day>
+        <month>06</month>
+        <year>2022</year>
+    </expiration_date>
+    </can>
+</cans>
